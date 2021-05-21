@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy element &apos;mail.properties&apos; to &apos;TeamCoffee/src/main/java/com.teamcoffee.member.controller&apos;&#x0D;&#x0A;- Original project: &apos;BomAir&apos;&#x0D;&#x0A;- Destination element: &apos;TeamCoffee/src/main/java/com.teamcoffee.member.controller&apos;&#x0D;&#x0A;- Original element: &apos;mail.properties&apos;" description="Copy file" destination="=TeamCoffee/src\/main\/java&lt;com.teamcoffee.member.controller" element1="src/main/java/pack/mail/controller/mail.properties" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1619068840373" units="0" version="1.0"/>
-</session>
