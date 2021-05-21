@@ -1,0 +1,28 @@
+package com.teamcoffee.like.vo;
+
+public class LikeVO {
+	private int likeNo;
+	private String cafeCode;
+	private String memCode;
+	public int getLikeNo() {
+		return likeNo;
+	}
+	public void setLikeNo(int likeNo) {
+		this.likeNo = likeNo;
+	}
+	public String getCafeCode() {
+		return cafeCode;
+	}
+	public void setCafeCode(String cafeCode) {
+		this.cafeCode = cafeCode;
+	}
+	public String getMemCode() {
+		return memCode;
+	}
+	public void setMemCode(String memCode) {
+		this.memCode = memCode;
+	}
+	
+	
+	
+}

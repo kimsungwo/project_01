@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<context:component-scan base-package="com.shop.*.service"/>
+	<context:component-scan base-package="com.shop.common"/>
+	
+	<!--어노테이션으로 트랜잭션처리하기위한설정, 저거 용량아래에 있는거3즐도  넣어야됨. -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+	<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+		<property name="username" value="MYDB"></property>
+		<property name="password" value="oracle"></property>
+	</bean>
+	
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	    <constructor-arg ref="dataSourceSpied" />
+	    <property name="logFormatter">
+	        <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+	            <property name="loggingType" value="MULTI_LINE" />
+	            <property name="sqlPrefix" value="SQL:::" />
+	        </bean>
+	    </property>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- <property name="configLocation" value="classpath:sql-map-config.xml"></property> -->
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="mapperLocations" value="classpath:mapper/*-mapper.xml"></property>
+	</bean>
+	
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+		
+	 <!-- 파일업로드 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+       <!-- 용량 -->
+       <property name="maxUploadSize" value="10485760" />
+       <property name="defaultEncoding" value="UTF-8"/>
+    </bean>	
+    <!-- 트랜잭션 매니저 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource"></property>
+    </bean>
+		
+	<!-- AOP사용을 위한 객체 생성 -->
+	<bean id="log" class="com.shop.common.LogAdvice"> <!-- id<-객체명임 -->
+	</bean>
+		
+		
+	<!-- 	
+		
+	AOP설정
+	<aop:config>
+		공통작업을 수행할 메소드가 포인트컷. 대상을 지정해주고 있는거임
+		<aop:pointcut id="allPointcut" expression="execution(* com.shop.aop..*Impl.*(..))" /> 
+		"execution(* com.shop.aop..*Impl.*(..))" 맨앞*는 리턴값을 의미함
+					*(..)모든메소드,매개변수도 신경안씀
+		<aop:pointcut id="selectPointcut" expression="execution(* com.shop.aop..*Impl.select*(..))" /> 
+		  deleteBoard만
+		<aop:pointcut id="deletePointcut" expression="execution(* com.shop.aop..*Impl.delete*(..))" /> 
+
+
+
+
+		
+		<aop:aspect ref="log">
+		aop:before  공통작업메소드들을 실행되기전에 실행하겠다.
+		allPointcut expression모든메소드를 대상으로 공통된 작업을 할거임
+		method="before" 실행될 메소드명으로 before라는걸 할거임 
+			<aop:before pointcut-ref="allPointcut" method="before"/>
+			<aop:around pointcut-ref="deletePointcut" method="aroundLog"/>
+			
+			<aop:after pointcut-ref="selectPointcut" method="after"/>
+
+			<aop:after-returning pointcut-ref="deletePointcut" method="afterReturn" returning="returnObj"/>
+		</aop:aspect>
+	</aop:config>
+		 -->
+	<!-- aop를 어노테이션으로 사용하기 위한 태그 -->
+		<aop:aspectj-autoproxy>
+		
+		</aop:aspectj-autoproxy>
+</beans>

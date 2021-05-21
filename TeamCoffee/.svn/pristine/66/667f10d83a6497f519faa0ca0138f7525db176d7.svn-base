@@ -1,0 +1,40 @@
+package com.teamcoffee.board.controller;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.teamcoffee.board.service.CommentService;
+import com.teamcoffee.board.vo.CommentVO;
+
+@Controller
+@RequestMapping("/comment")
+public class CommentController {
+	@Resource(name = "commentService")
+	private CommentService commentService;
+	
+	// 댓글 업로드
+	@PostMapping("/commentUpload")
+	public String commentUpload(CommentVO commentVO, Model model) {
+		commentService.commentUpload(commentVO);
+		model.addAttribute("boardNum", commentVO.getBoardNum()); 
+		model.addAttribute("boardCode", "BOARD_4"); // 유저게시판에만 적용
+		return "redirect:/board/boardDetail";
+	}
+	
+	// 댓글 삭제
+	@GetMapping("/deleteComment")
+	public String deleteComment(CommentVO commentVO, int boardNum, Model model) {
+		commentService.deleteComment(commentVO.getCommentCode());
+		model.addAttribute("boardNum", commentVO.getBoardNum()); 
+		model.addAttribute("boardCode", "BOARD_4"); // 유저게시판에만 적용
+		return "redirect:/board/boardDetail";
+	}
+	
+	// 대댓글
+	
+}

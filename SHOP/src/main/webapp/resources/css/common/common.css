@@ -1,0 +1,30 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+
+.container-fluid{
+	width:90%;
+	font-family: 'Do Hyeon', sans-serif;
+	font-size: 17px;
+}
+a{
+	color:black;
+	text-decoration: none;
+}
+a:hover {
+	color:black;
+	text-decoration: none;
+}
+/*validation처리후 조건이 맞지않을때 나타나는 문구의 스타일  */
+label[class="error"]{
+	font-size:0.8rem;
+	color: red;
+}
+
+
+
+
+
+
+
+
+

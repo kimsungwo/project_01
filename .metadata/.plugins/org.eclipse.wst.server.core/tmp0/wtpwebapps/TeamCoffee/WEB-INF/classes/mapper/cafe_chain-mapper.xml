@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="cafeChainMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.cafe.vo.CafeChainVO" id="chain">
+		<id     column="CHAIN_CODE" property="chainCode"/>
+		<result column="CHAIN_NAME" property="chainName"/>
+		<result column="CHAIN_LOGO" property="chainLogo"/>
+	</resultMap>
+	
+	<select id="selectChainList" resultMap="chain">
+		SELECT CHAIN_CODE
+			, CHAIN_NAME
+			, CHAIN_LOGO
+		FROM DJV_CAFE_CHAIN
+		<if test="chainName !=null and !chainName.equals('')">
+		WHERE UPPER(CHAIN_NAME) LIKE '%'||UPPER(#{chainName})||'%'
+		</if>
+		ORDER BY CHAIN_CODE
+	</select>
+	
+	<!-- 체인점 선택시 로고변화 -->
+	<select id="selectChainLogo" resultType="String">
+		SELECT CHAIN_LOGO
+		FROM DJV_CAFE_CHAIN
+		WHERE CHAIN_CODE = #{chainCode} 
+	</select>
+	
+	<!-- 체인점정보 -->
+	<select id="selectChainInfo" resultMap="chain">
+		SELECT CHAIN_CODE
+			, CHAIN_NAME
+			, CHAIN_LOGO
+		FROM DJV_CAFE_CHAIN
+		WHERE CHAIN_CODE = #{chainCode}
+	</select>
+</mapper>

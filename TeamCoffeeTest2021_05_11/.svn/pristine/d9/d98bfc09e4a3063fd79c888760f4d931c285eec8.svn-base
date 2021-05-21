@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="buyMapper">
+	<!-- resultmap 작성 -->
+	
+	<resultMap type="com.teamcoffee.buy.vo.BuyVO" id="buy">
+		<id     column="BUY_CODE" 		property="buyCode"/>
+		<result column="CAFE_CODE" 		property="cafeCode"/>
+		<result column="TOTAL_PRICE" 	property="totalPrice"/>
+		<result column="BUY_DATE" 		property="buyDate"/>
+		<result column="IS_REVIEWED" 	property="isReviewed"/>
+		<result column="BUY_REQUESTS" 	property="buyRequests"/>
+		<result column="BUY_STATUS" 	property="buyStatus"/>
+		<result column="MEM_CODE" 		property="memCode"/>
+	</resultMap>
+	
+	<resultMap type="com.teamcoffee.buy.vo.BuyDetailVO" id="buyDetail">
+		<id     column="BUY_DETAIL_CODE" 	property="buyDetailCode"/>
+		<result column="BUY_CODE" 			property="buyCode"/>
+		<result column="MENU_CODE" 			property="menuCode"/>
+		<result column="BUY_QUANTITY" 		property="buyQuantity"/>
+		<result column="BUY_PRICE" 			property="buyPrice"/>
+	</resultMap>
+	
+	<resultMap type="com.teamcoffee.buy.vo.BuyDetailOptionVO" id="buyDetailOption">
+		<id     column="BUY_DETAIL_OPTION_CODE" 	property="buyDetailOptionCode"/>
+		<result column="BUY_DETAIL_CODE" 			property="buyDetailCode"/>
+		<result column="MENU_OPTION_CODE" 			property="menuOptionCode"/>
+	</resultMap>
+	
+	<select id="selectBuyerInfo" resultMap="memberMapper.member">
+		SELECT MEM_CODE
+			, MEM_ID
+			, MEM_TEL
+			, MEM_NICKNAME
+			, MEM_POINT
+			, MEM_ADDR
+			, MEM_ADDR_DETAIL
+			, MEM_TEL
+			, MEM_EMAIL
+		FROM DJV_MEMBER
+		WHERE MEM_CODE = #{memCode}
+	</select>
+
+	<insert id="insertBuyList">
+		INSERT INTO DJV_BUY (
+			BUY_CODE
+			, CAFE_CODE
+			, TOTAL_PRICE
+			, BUY_REQUESTS
+			, MEM_CODE
+		) VALUES (
+			(SELECT 'BUY_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BUY_CODE, 5))) + 1, 1), 3, '0') FROM DJV_BUY)
+			, #{cafeCode}
+			, #{totalPrice}
+			, #{buyRequests}
+			, #{memCode}
+		)
+	</insert>
+	
+	<select id="selectMaxBuyCode" resultType="String">
+		SELECT MAX(BUY_CODE)
+		FROM DJV_BUY
+	</select>
+	
+	<select id="selectBuyMenuList" resultMap="cartMapper.cartView">
+		SELECT MENU_CODE
+			, CART_CODE
+			, BUY_QUANTITY
+			, CART_PRICE
+		FROM DJV_CART
+		WHERE MEM_CODE = #{memCode}
+		ORDER BY CART_CODE
+	</select>
+	
+	<insert id="insertBuyMenu">
+		INSERT INTO DJV_BUY_DETAIL (
+			BUY_DETAIL_CODE
+			, BUY_CODE
+			, MENU_CODE
+			, BUY_QUANTITY
+			, BUY_PRICE
+		) VALUES (
+			(SELECT 'BUY_D_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BUY_DETAIL_CODE, 7))) + 1, 1), 3, '0') FROM DJV_BUY_DETAIL)
+			, #{buyCode}
+			, #{menuCode}
+			, #{buyQuantity}
+			, #{buyPrice}
+		)
+	</insert>
+
+	<select id="selectMaxBuyDetailCode" resultType="String">
+		SELECT MAX(BUY_DETAIL_CODE)
+		FROM DJV_BUY_DETAIL
+	</select>
+
+	<select id="selectMaxDetailOptionNum" resultType="int">
+		SELECT NVL(MAX(TO_NUMBER(SUBSTR(BUY_DETAIL_OPTION_CODE, 8))) + 1, 1)
+		FROM DJV_BUY_DETAIL_OPTION
+	</select>
+
+	<select id="selectBuyMenuDetailList" resultMap="cartMapper.cartView">
+		SELECT MENU_OPTION_CODE
+		FROM CART_VIEW
+		WHERE CART_CODE = #{cartCode}
+		ORDER BY MENU_OPTION_GROUP_TYPE DESC, CART_OPTION_CODE
+	</select>
+
+	<insert id="insertBuyMenuOption">
+		INSERT INTO DJV_BUY_DETAIL_OPTION (
+			BUY_DETAIL_OPTION_CODE
+			, BUY_DETAIL_CODE
+			, MENU_OPTION_CODE
+		)
+		<foreach collection="buyDetailOptions" item="detailOptions" separator="UNION ALL">
+			SELECT #{detailOptions.buyDetailOptionCode}
+				, #{detailOptions.buyDetailCode}
+				, #{detailOptions.menuOptionCode}
+			FROM DUAL
+		</foreach>
+	</insert>
+	
+
+</mapper>	
+	

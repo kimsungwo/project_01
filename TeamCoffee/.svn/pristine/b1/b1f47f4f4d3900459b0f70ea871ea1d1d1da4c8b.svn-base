@@ -1,0 +1,48 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style type="text/css">
+.container{
+	width: 35rem;
+}
+.inlineBlock{
+	display: inline-block;
+}
+.btn1{
+	margin-left: 22rem;
+	margin-top: 2rem;
+}
+.profileTable{
+	margin-top: 3rem;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<h1>비밀번호 찾기 결과[일반회원]</h1>
+		<form action="/member/find_pwForm" method="get">
+				<c:choose>
+				<c:when test="${not empty findPw}">
+						가입하신 이메일로 임시비밀번호를 발급했습니다.
+						<button type="button" onclick="location.href='/cafe/main';" class="btn1 btn-primary">메인페이지</button>
+				</c:when>
+					<c:otherwise>
+								<p>이메일이나 ID를 정확하게 입력해주세요.</p>
+								<p class="w3-center">
+									<button type="button" onclick="history.go(-1);"class="btn btn1 btn-primary">뒤로가기</button>
+								</p>
+							</c:otherwise>
+				</c:choose>
+		</form>
+	</div>
+</body>
+</html>

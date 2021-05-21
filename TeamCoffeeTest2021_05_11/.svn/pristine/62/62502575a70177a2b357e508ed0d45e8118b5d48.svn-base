@@ -1,0 +1,14 @@
+package com.teamcoffee.buy.service;
+
+import com.teamcoffee.buy.vo.BuyVO;
+import com.teamcoffee.member.vo.MemberVO;
+
+public interface BuyService {
+	
+	//구매자의 정보
+	MemberVO selectBuyerInfo(MemberVO memberVO);
+	
+	//구매 테이블에 insert
+	int insertBuyList(BuyVO buyVO);
+	
+}

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="goodsMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.shop.item.vo.CategoryVO" id="category">
+		<id     column="CATEGORY_CODE" property="categoryCode"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
+		<result column="CATEGORY_USER" property="createUser"/>
+		<result column="ITEM_CODE"	   property="itemCode"/>
+		<result column="ITEM_NAME" 	   property="itemName"/>
+		<result column="CREATE_DATE"   property="createDate"/>
+		<result column="ITEM_INFO" 	   property="itemInfo"/>
+		<result column="ITEM_PRICE"    property="itemPrice"/>
+		<result column="ITEM_STOCK" 		   property="itemStock"/>
+		<result column="ITEM_STATUS"   property="itemStatus"/>
+	</resultMap>
+	
+	<resultMap type="com.shop.item.vo.ImgVO" id="img">
+		<id     column="IMG_CODE"	 property="imgCode"/>
+		<result column="IMG_NAME"	 property="imgName"/>
+		<result column="ITEM_CODE"	 property="itemCode"/>
+		<result column="IS_MAIN"     property="isMain"/>
+	</resultMap>
+	
+	<resultMap type="com.shop.item.vo.ItemViewVO" id="itemView">
+		<id     column="ITEM_CODE"	   property="itemCode"/>
+		<result column="CATEGORY_CODE" property="categoryCode"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
+		<result column="CATEGORY_USER" property="createUser"/>
+		<result column="ITEM_NAME" 	   property="itemName"/>
+		<result column="CREATE_DATE"   property="createDate"/>
+		<result column="ITEM_INFO" 	   property="itemInfo"/>
+		<result column="ITEM_PRICE"    property="itemPrice"/>
+		<result column="ITEM_STOCK" 		   property="itemStock"/>
+		<result column="ITEM_STATUS"   property="itemStatus"/>
+		<result column="IMG_CODE"	   property="imgCode"/>
+		<result column="IMG_NAME"	   property="imgName"/>
+		<result column="IS_MAIN"       property="isMain"/>
+	</resultMap>
+	
+		<select id="selectCategoryList" resultMap="category">
+			SELECT CATEGORY_CODE
+				, CATEGORY_NAME
+			FROM BOOK_CATEGORY
+			ORDER BY CATEGORY_CODE
+		</select>
+		<insert id="insertCategory">
+		INSERT INTO BOOK_CATEGORY (CATEGORY_CODE
+			, CATEGORY_NAME
+			, CREATE_USER
+		)VALUES(
+			(SELECT 'CATE_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CATEGORY_CODE,6)))+1,1),3,'0') FROM BOOK_CATEGORY)	
+			, #{categoryName}
+			, #{createUser}
+			) 
+		</insert>
+		<delete id="deleteCategory">
+		DELETE BOOK_CATEGORY WHERE CATEGORY_CODE = #{categoryCode}
+		</delete>
+		<insert id="insertItem">
+		INSERT INTO BOOK_ITEM ( 
+		   ITEM_CODE
+ 		   , ITEM_NAME
+ 		   , ITEM_PRICE
+ 		   , ITEM_INFO
+ 		   , CREATE_USER
+ 		   , CATEGORY_CODE
+		) VALUES (
+			(SELECT 'BOOK_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(ITEM_CODE,6)))+1,1),3,'0') FROM BOOK_ITEM ) 
+			
+			, #{itemName}
+			, #{itemPrice}
+			, #{itemInfo}
+			, #{createUser}
+			, #{categoryCode}
+		)
+		</insert>
+		<select id="selectItemList" resultMap="itemView">
+		SELECT ITEM_CODE
+   		   , ITEM_NAME
+ 		   , ITEM_PRICE
+ 		   , IMG_NAME
+		FROM item_view
+		WHERE is_main = 'Y'
+		ORDER BY CREATE_DATE DESC
+		</select>
+		<insert id="insertImgs">
+			INSERT INTO book_item_image (img_code,IMG_NAME,item_code,is_main)
+			<foreach collection="imgList" item="imgInfo" separator="UNION ALL">
+ <!-- collection="imgList"  == imgVO.getImgList(); -->
+			SELECT
+				#{imgInfo.imgCode}
+				, #{imgInfo.imgName}
+			    , #{imgInfo.itemCode}
+			    , #{imgInfo.isMain}				
+			FROM DUAL
+			</foreach>
+		</insert>
+		<!--NVL(,1) 앞의 숫자가 널일때 뒤의숫자로 정의.여기선 1로 정의  -->
+		<select id="selectNextImgNumber" resultType="int">
+			SELECT NVL(MAX(TO_NUMBER(SUBSTR(IMG_CODE,5)))+1,1)
+			FROM BOOK_ITEM_IMAGE
+		</select>	
+		
+		<!-- 문자열로 받는거라 String으로 받는다. -->
+		<select id="selectMaxItemCode" resultType="String">
+			SELECT MAX(ITEM_CODE)
+			FROM BOOK_ITEM
+		</select>
+		<select id="selectItemDetail" resultMap="itemView">
+			SELECT ITEM_CODE
+   				 , ITEM_NAME
+   				 , ITEM_PRICE
+  				 , ITEM_INFO
+ 				 , CATEGORY_NAME
+ 				 , ITEM_STOCK
+ 				 , ITEM_STATUS
+  				 , DECODE(ITEM_STATUS,0,'판매준비',1,'판매중',2,'매진') AS STATUS
+  				 , IMG_NAME
+  				 , IS_MAIN
+			FROM ITEM_VIEW
+			where ITEM_CODE = #{itemCode}
+			ORDER BY IS_MAIN DESC
+		</select>
+		
+		<select id="selectSalesList" resultMap="itemView"> 
+			SELECT ITEM_CODE
+   				 , ITEM_NAME
+   				 , ITEM_PRICE
+  				 , IMG_NAME
+ 				 , ITEM_STOCK
+ 				 , ITEM_STATUS
+  				 , STATUS
+			FROM ITEM_VIEW
+			WHERE IS_MAIN = 'Y'
+			<if test="categoryCode != null and !categoryCode.equals('')">
+			AND CATEGORY_CODE = #{categoryCode}
+			</if>
+			<if test="itemName != null and !itemName.equals('')">
+			AND ITEM_NAME LIKE '%'||UPPER(#{itemName})||'%'
+			</if>
+			<if test="itemStatuses != null">
+			AND ITEM_STATUS IN 
+			<foreach collection="itemStatuses" item="itemStatus" open="(" separator="," close=")">
+				#{itemStatus}
+			</foreach>
+			</if>
+			ORDER BY
+			<choose>
+				<when test="order != null and !order.equals('')">
+					${order} ${sort}
+				</when>
+				<otherwise>
+					ITEM_NAME
+				</otherwise>
+			</choose>
+		</select>		
+		<update id="updateItemStock">
+		UPDATE BOOK_ITEM
+		SET
+		ITEM_STOCK = #{itemStock}
+		WHERE ITEM_CODE = #{itemCode}
+		</update>
+		
+		<update id="updateItemPrice">
+		UPDATE BOOK_ITEM
+		SET
+		ITEM_PRICE = #{itemPrice}
+		WHERE ITEM_CODE = #{itemCode}
+		</update>
+
+		
+		<update id="updateItemStatus">
+		UPDATE BOOK_ITEM
+		SET
+		ITEM_STATUS = #{itemStatus}
+		WHERE ITEM_CODE = #{itemCode}
+		</update>
+		
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

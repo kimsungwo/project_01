@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="cafeChainMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.board.vo.BoardVO" id="board">
+		<id 	column="BOARD_NUM"			property="boardNum"/>
+		<result	column="BOARD_NAME"			property="boardName"/>
+		<result	column="BOARD_CONTENT"		property="boardContent"/>
+		<result column="BOARD_WRITER"		property="boardWriter"/>
+		<result	column="BOARD_CODE"			property="boardCode"/>
+		<result	column="BOARD_REG_DATE"		property="boardRegDate"/>
+		<result	column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result	column="EVENT_FROM_DATE"	property="eventFromDate"/>
+		<result	column="EVENT_TO_DATE"		property="eventToDate"/>
+	</resultMap>
+	<!-- 일반공지 게시글 목록 -->
+	<select id="noticeList1" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_1'
+	</select>
+	<!-- 중요공지 게시글 목록 -->
+	<select id="noticeList2" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_2'
+	</select>
+	
+	<!-- 공지사항 업로드 -->
+	<insert id="noticeUpload">
+		INSERT INTO DJV_BOARD(
+			BOARD_NUM
+			, BOARD_NAME
+			, BOARD_CONTENT
+			, BOARD_WRITER
+			, BOARD_CODE
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_NUM)+1, 1) FROM DJV_BOARD)
+			, #{boardName}
+			, #{boardContent}
+			, #{boardWriter}
+			, #{boardCode}
+		)
+	</insert>
+	
+	<!-- 이벤트 게시글 목록 -->
+	<select id="eventList" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, TO_CHAR(EVENT_FROM_DATE, 'YYYY-MM-DD') AS EVENT_FROM_DATE
+			, TO_CHAR(EVENT_TO_DATE, 'YYYY-MM-DD') AS EVENT_TO_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_3'
+	</select>
+	
+	<!-- 이벤트 업로드 -->
+	<insert id="eventUpload">
+		INSERT INTO DJV_BOARD(
+			BOARD_NUM
+			, BOARD_NAME
+			, BOARD_CONTENT
+			, BOARD_WRITER
+			, BOARD_CODE
+			, EVENT_FROM_DATE
+			, EVENT_TO_DATE
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_NUM)+1, 1) FROM DJV_BOARD)
+			, #{boardName}
+			, #{boardContent}
+			, #{boardWriter}
+			, #{boardCode}
+			, #{eventFromDate}
+			, #{eventToDate}
+		)
+	</insert>
+	
+	<!-- 유저게시글 목록 -->
+	<select id="userBoardList" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_4'
+	</select>
+	
+	<!-- 유저게시판 업로드 -->
+	<insert id="userBoardUpload">
+		INSERT INTO DJV_BOARD(
+			BOARD_NUM
+			, BOARD_NAME
+			, BOARD_CONTENT
+			, BOARD_WRITER
+			, BOARD_CODE
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_NUM)+1, 1) FROM DJV_BOARD)
+			, #{boardName}
+			, #{boardContent}
+			, #{boardWriter}
+			, #{boardCode}
+		)
+	</insert>
+</mapper>

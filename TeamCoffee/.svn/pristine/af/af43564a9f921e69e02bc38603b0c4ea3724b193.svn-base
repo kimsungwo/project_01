@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="boardMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.board.vo.BoardVO" id="board">
+		<id 	column="BOARD_NUM"			property="boardNum"/>
+		<result	column="BOARD_NAME"			property="boardName"/>
+		<result	column="BOARD_CONTENT"		property="boardContent"/>
+		<result column="BOARD_WRITER"		property="boardWriter"/>
+		<result	column="BOARD_CODE"			property="boardCode"/>
+		<result	column="BOARD_REG_DATE"		property="boardRegDate"/>
+		<result	column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result	column="EVENT_FROM_DATE"	property="eventFromDate"/>
+		<result	column="EVENT_TO_DATE"		property="eventToDate"/>
+	</resultMap>
+	
+	<resultMap type="com.teamcoffee.board.vo.ImgVO" id="boardImg">
+		<id		column="BOARD_IMG_CODE"			property="boardImgCode"/>
+		<result column="BOARD_CODE"				property="boardCode"/>
+		<result column="BOARD_IMG_IS_MAIN"		property="boardImgIsMain"/>
+		<result column="BOARD_UPLOAD_IMG_NAME"	property="boardUploadImgName"/>
+		<result column="BOARD_ORIGIN_IMG_NAME"	property="boardOriginImgName"/>
+		<result column="BOARD_REG_DATE"			property="boardRegDate"/>
+	</resultMap>
+	
+	<resultMap type="com.teamcoffee.board.vo.BoardViewVO" id="boardView">
+		<id 	column="BOARD_NUM"			property="boardNum"/>
+		<result	column="BOARD_NAME"			property="boardName"/>
+		<result	column="BOARD_CONTENT"		property="boardContent"/>
+		<result column="BOARD_WRITER"		property="boardWriter"/>
+		<result	column="BOARD_CODE"			property="boardCode"/>
+		<result	column="BOARD_REG_DATE"		property="boardRegDate"/>
+		<result	column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result	column="EVENT_FROM_DATE"	property="eventFromDate"/>
+		<result	column="EVENT_TO_DATE"		property="eventToDate"/>
+		<result	column="BOARD_IMG_CODE"		property="boardImgCode"/>
+		<result column="BOARD_IMG_IS_MAIN"		property="boardImgIsMain"/>
+		<result column="BOARD_UPLOAD_IMG_NAME"	property="boardUploadImgName"/>
+		<result column="BOARD_ORIGIN_IMG_NAME"	property="boardOriginImgName"/>
+	</resultMap>
+	
+	<resultMap type="com.teamcoffee.board.vo.CommentVO" id="comment">
+		<id		column="COMMENT_CODE"		property="commentCode"/>
+		<result column="COMMENT_WRITER"		property="commentWriter"/>
+		<result	column="COMMENT_CONTENT"	property="commentContent"/>
+		<result column="COMMENT_DATE"		property="commentDate"/>
+		<result column="BOARD_NUM"			property="boardNum"/>
+			
+	</resultMap>
+	
+	<!-- 일반공지 게시글 목록 -->
+	<select id="noticeList1" resultMap="board">
+		SELECT ROW_NUM
+		    , BOARD_NUM
+		    , BOARD_NAME
+		    , BOARD_WRITER
+		    , BOARD_REG_DATE
+		    , BOARD_VIEW_CNT
+		    , BOARD_CODE
+		FROM 
+		(
+		    SELECT ROWNUM AS ROW_NUM
+		        , BOARD_NUM
+		        , BOARD_NAME
+		        , BOARD_WRITER
+		        , BOARD_REG_DATE
+		        , BOARD_VIEW_CNT
+		        , BOARD_CODE
+		    FROM
+		    (
+		        SELECT BOARD_NUM
+		            , BOARD_NAME
+		            , BOARD_WRITER
+		            , TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+		            , BOARD_VIEW_CNT
+		            , BOARD_CODE
+		        FROM DJV_BOARD
+		        WHERE BOARD_CODE = 'BOARD_1'
+		        <!-- 게시글 검색 -->
+				<if test="searchValue != null and !searchValue.equals('')">
+					AND ${searchKeyword} LIKE '%'||#{searchValue}||'%'	
+				</if>
+		        ORDER BY BOARD_NUM DESC
+		    )
+		)
+		WHERE ROW_NUM &gt;= #{startNum} AND ROW_NUM &lt;= #{endNum}
+	</select>
+	
+	<!-- 중요공지 게시글 목록 -->
+	<select id="noticeList2" resultMap="board">
+	SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+			, BOARD_CODE
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_2'
+		ORDER BY BOARD_NUM DESC
+	
+	</select>
+	
+	<!-- 게시글 업로드 -->
+	<insert id="boardUpload">
+		INSERT INTO DJV_BOARD(
+			BOARD_NUM
+			, BOARD_NAME
+			, BOARD_CONTENT
+			, BOARD_WRITER
+			, BOARD_CODE
+			, EVENT_FROM_DATE
+			, EVENT_TO_DATE
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_NUM)+1, 1) FROM DJV_BOARD)
+			, #{boardName}
+			, #{boardContent}
+			, #{boardWriter}
+			, #{boardCode}
+			, #{eventFromDate}
+			, #{eventToDate}
+		)
+	</insert>
+	
+	<!-- 이벤트 게시글 목록 -->
+	<select id="eventList" resultMap="boardView">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_REG_DATE
+			, TO_CHAR(EVENT_FROM_DATE, 'YYYY-MM-DD') AS EVENT_FROM_DATE
+			, TO_CHAR(EVENT_TO_DATE, 'YYYY-MM-DD') AS EVENT_TO_DATE
+			, BOARD_VIEW_CNT
+			, BOARD_UPLOAD_IMG_NAME
+			, BOARD_CODE
+		FROM DJV_BOARD_VIEW
+		WHERE BOARD_IMG_IS_MAIN = 'Y'
+		AND BOARD_CODE = 'BOARD_3'
+		ORDER BY BOARD_NUM DESC
+	</select>
+	
+	<!-- 유저게시글 목록 -->
+	<select id="userBoardList" resultMap="board">
+			SELECT ROW_NUM
+		    , BOARD_NUM
+		    , BOARD_NAME
+		    , BOARD_WRITER
+		    , BOARD_CONTENT
+		    , BOARD_REG_DATE
+		    , BOARD_VIEW_CNT
+		    , BOARD_CODE
+		FROM
+		(
+		    SELECT ROWNUM AS ROW_NUM
+		    , BOARD_NUM
+		    , BOARD_NAME
+		    , BOARD_WRITER
+		    , BOARD_CONTENT
+		    , BOARD_REG_DATE
+		    , BOARD_VIEW_CNT
+		    , BOARD_CODE
+		    FROM 
+		    (
+		        SELECT BOARD_NUM
+		            , BOARD_NAME
+		            , BOARD_WRITER
+		            , BOARD_CONTENT
+		            , TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+		            , BOARD_VIEW_CNT
+		            , BOARD_CODE
+		        FROM DJV_BOARD
+		        WHERE BOARD_CODE = 'BOARD_4'
+		        <if test="searchValue != null and !searchValue.equals('')">
+					AND ${searchKeyword} LIKE '%'||#{searchValue}||'%'	
+				</if>
+		        ORDER BY BOARD_NUM DESC
+		    )
+		)
+		WHERE ROW_NUM &gt;= #{startNum} AND ROW_NUM &lt;= #{endNum}
+	</select>
+
+	<!-- 게시글 상세보기 -->
+	<select id="boardDetail" resultMap="boardView">
+		SELECT BOARD_NAME
+			, BOARD_NUM
+			, BOARD_WRITER
+			, BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+			, BOARD_CONTENT
+			, BOARD_CODE
+			, BOARD_UPLOAD_IMG_NAME
+			, TO_CHAR(EVENT_FROM_DATE, 'YYYY-MM-DD') AS EVENT_FROM_DATE
+			, TO_CHAR(EVENT_TO_DATE, 'YYYY-MM-DD') AS EVENT_TO_DATE
+		FROM DJV_BOARD_VIEW
+		WHERE BOARD_NUM = #{boardNum}
+		<if test="boardCode.equals('BOARD_3')">
+		AND BOARD_IMG_IS_MAIN = 'N'
+		</if>
+	</select>
+
+	<!-- 게시글 수정 -->
+	<update id="updateBoard">
+		UPDATE DJV_BOARD
+		SET
+		BOARD_NAME = #{boardName}
+		, BOARD_CONTENT = #{boardContent}
+		, EVENT_FROM_DATE = #{eventFromDate}
+		, EVENT_TO_DATE = #{eventToDate}
+		, BOARD_CODE = #{boardCode}
+		WHERE BOARD_NUM = #{boardNum}
+	</update>
+
+	<!-- 게시물 삭제 -->
+	<select id="delete">
+		DELETE DJV_BOARD
+		WHERE BOARD_NUM = #{boardNum}
+	</select>
+	
+	<!-- 게시물 이미지 등록  -->
+	<insert id="insertBoardImgs">
+		INSERT INTO DJV_BOARD_IMG (
+			BOARD_IMG_CODE
+			, BOARD_NUM
+			, BOARD_IMG_IS_MAIN
+			, BOARD_UPLOAD_IMG_NAME
+			, BOARD_ORIGIN_IMG_NAME
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_IMG_CODE)+1, 1) FROM DJV_BOARD_IMG)
+			, #{boardNum}
+			, #{boardImgIsMain}
+			, #{boardUploadImgName}
+			, #{boardOriginImgName}
+		)
+	</insert>
+	
+	<!-- 게시글 이미지를 디비에 등록 할 때 필요한 글 번호를 조회한다. -->
+	<select id="selectMaxBoardNum" resultType="int">
+		SELECT MAX(BOARD_NUM) FROM DJV_BOARD
+	</select>
+	
+	<!-- 게시물 조회수 증가 -->
+	<update id="viewCnt">
+		UPDATE DJV_BOARD
+		SET
+		BOARD_VIEW_CNT = BOARD_VIEW_CNT + 1
+		WHERE BOARD_NUM = #{boardNum}
+	</update>
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertComment">
+		INSERT INTO DJV_COMMENT (
+			COMMENT_CODE
+			, COMMENT_WRITER
+			, COMMENT_CONTENT
+			, BOARD_NUM
+		) VALUES (
+			(SELECT 'COMMENT_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(COMMENT_CODE, 9))) + 1, 1), 6, '0') FROM DJV_COMMENT)
+			, #{commentWriter}
+			, #{commentContent}
+			, #{boardNum}
+		)
+	</insert>
+	
+	<!-- 댓글 목록 -->
+	<select id="selectComments" resultMap="comment">
+		SELECT COMMENT_CODE
+			, COMMENT_WRITER
+			, COMMENT_CONTENT
+			, TO_CHAR(COMMENT_DATE, 'YYYY.MM.DD. HH24:MI') AS COMMENT_DATE
+		FROM DJV_COMMENT
+		WHERE BOARD_NUM = #{boardNum}
+		ORDER BY COMMENT_CODE DESC
+	</select>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteComment">
+		DELETE DJV_COMMENT
+		WHERE COMMENT_CODE = #{commentCode}
+	</delete>
+	
+	<!-- 일반 공지 게시글 총 개수 조회 -->
+	<select id="selectBoardCnt1" resultType="int">
+	 SELECT COUNT(BOARD_NUM)
+	 FROM DJV_BOARD
+	 WHERE BOARD_CODE = 'BOARD_1'
+	<if test="searchValue != null and !searchValue.equals('')">
+		AND ${searchKeyword} LIKE '%'||#{searchValue}||'%'	
+	</if>
+	</select>
+	
+	<!-- 이벤트 게시판 게시글 총 개수 조회 -->
+	<select id="selectBoardCnt2" resultType="int">
+	 SELECT COUNT(BOARD_NUM)
+	 FROM DJV_BOARD
+	 WHERE BOARD_CODE = 'BOARD_3'
+	<if test="searchValue != null and !searchValue.equals('')">
+		AND ${searchKeyword} LIKE '%'||#{searchValue}||'%'	
+	</if>
+	</select>
+	
+	<!-- 유저게시판 게시글 총 개수 조회 -->
+	<select id="selectBoardCnt3" resultType="int">
+	 SELECT COUNT(BOARD_NUM)
+	 FROM DJV_BOARD
+	 WHERE BOARD_CODE = 'BOARD_4'
+	<if test="searchValue != null and !searchValue.equals('')">
+		AND ${searchKeyword} LIKE '%'||#{searchValue}||'%'	
+	</if>
+	</select>
+</mapper>

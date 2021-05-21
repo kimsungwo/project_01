@@ -1,0 +1,216 @@
+package com.teamcoffee.cafe.vo;
+
+import java.util.Date;
+
+//카페 
+public class CafeVO {
+
+ // 카페코드 
+ private String cafeCode;
+
+ // 카페 이름 
+ private String cafeName;
+
+ // 매장 코드 
+ private String cafeOwnerCode;
+
+ // 체인점 코드 
+ private String cafeChainCode;
+
+ // 카페운영시간 
+ private String cafeHours;
+
+ // 카페 폰번호 
+ private String cafeTel;
+
+ // 카페 주소 
+ private String cafeAddr;
+
+ // 카페 상세주소 
+ private String cafeAddrDetail;
+
+ // 카페 로고 
+ private String cafeLogo;
+
+ // 카페 정보 
+ private String cafeInfo;
+
+ // 카페STAR 
+ private int cafeStar;
+
+ // 카페리뷰 횟수 
+ private int cafeReviewCnt;
+
+ // 세스코유무 
+ private String cafeCesco;
+
+ // 카페 날짜 
+ private Date cafeRegDate;
+
+ // 카페 상태 
+ private String cafeState;
+
+ // 위도 
+ private String cafeLatitude;
+
+ // 경도 
+ private String cafeLongitude;
+
+ public String getCafeCode() {
+     return cafeCode;
+ }
+
+ public void setCafeCode(String cafeCode) {
+     this.cafeCode = cafeCode;
+ }
+
+ public String getCafeName() {
+     return cafeName;
+ }
+
+ public void setCafeName(String cafeName) {
+     this.cafeName = cafeName;
+ }
+
+ public String getCafeOwnerCode() {
+     return cafeOwnerCode;
+ }
+
+ public void setCafeOwnerCode(String cafeOwnerCode) {
+     this.cafeOwnerCode = cafeOwnerCode;
+ }
+
+ public String getCafeChainCode() {
+     return cafeChainCode;
+ }
+
+ public void setCafeChainCode(String cafeChainCode) {
+     this.cafeChainCode = cafeChainCode;
+ }
+
+ public String getCafeHours() {
+     return cafeHours;
+ }
+
+ public void setCafeHours(String cafeHours) {
+     this.cafeHours = cafeHours;
+ }
+
+ public String getCafeTel() {
+     return cafeTel;
+ }
+
+ public void setCafeTel(String cafeTel) {
+     this.cafeTel = cafeTel;
+ }
+
+ public String getCafeAddr() {
+     return cafeAddr;
+ }
+
+ public void setCafeAddr(String cafeAddr) {
+     this.cafeAddr = cafeAddr;
+ }
+
+ public String getCafeAddrDetail() {
+     return cafeAddrDetail;
+ }
+
+ public void setCafeAddrDetail(String cafeAddrDetail) {
+     this.cafeAddrDetail = cafeAddrDetail;
+ }
+
+ public String getCafeLogo() {
+     return cafeLogo;
+ }
+
+ public void setCafeLogo(String cafeLogo) {
+     this.cafeLogo = cafeLogo;
+ }
+
+ public String getCafeInfo() {
+     return cafeInfo;
+ }
+
+ public void setCafeInfo(String cafeInfo) {
+     this.cafeInfo = cafeInfo;
+ }
+
+ public int getCafeStar() {
+     return cafeStar;
+ }
+
+ public void setCafeStar(int cafeStar) {
+     this.cafeStar = cafeStar;
+ }
+
+ public int getCafeReviewCnt() {
+     return cafeReviewCnt;
+ }
+
+ public void setCafeReviewCnt(int cafeReviewCnt) {
+     this.cafeReviewCnt = cafeReviewCnt;
+ }
+
+ public String getCafeCesco() {
+     return cafeCesco;
+ }
+
+ public void setCafeCesco(String cafeCesco) {
+     this.cafeCesco = cafeCesco;
+ }
+
+ public Date getCafeRegDate() {
+     return cafeRegDate;
+ }
+
+ public void setCafeRegDate(Date cafeRegDate) {
+     this.cafeRegDate = cafeRegDate;
+ }
+
+ public String getCafeState() {
+     return cafeState;
+ }
+
+ public void setCafeState(String cafeState) {
+     this.cafeState = cafeState;
+ }
+
+ public String getCafeLatitude() {
+     return cafeLatitude;
+ }
+
+ public void setCafeLatitude(String cafeLatitude) {
+     this.cafeLatitude = cafeLatitude;
+ }
+
+ public String getCafeLongitude() {
+     return cafeLongitude;
+ }
+
+ public void setCafeLongitude(String cafeLongitude) {
+     this.cafeLongitude = cafeLongitude;
+ }
+
+ // DjvCafe 모델 복사
+ public void CopyData(CafeVO param)
+ {
+     this.cafeCode = param.getCafeCode();
+     this.cafeName = param.getCafeName();
+     this.cafeOwnerCode = param.getCafeOwnerCode();
+     this.cafeChainCode = param.getCafeChainCode();
+     this.cafeHours = param.getCafeHours();
+     this.cafeTel = param.getCafeTel();
+     this.cafeAddr = param.getCafeAddr();
+     this.cafeAddrDetail = param.getCafeAddrDetail();
+     this.cafeLogo = param.getCafeLogo();
+     this.cafeInfo = param.getCafeInfo();
+     this.cafeStar = param.getCafeStar();
+     this.cafeReviewCnt = param.getCafeReviewCnt();
+     this.cafeCesco = param.getCafeCesco();
+     this.cafeRegDate = param.getCafeRegDate();
+     this.cafeState = param.getCafeState();
+     this.cafeLatitude = param.getCafeLatitude();
+     this.cafeLongitude = param.getCafeLongitude();
+ }
+}

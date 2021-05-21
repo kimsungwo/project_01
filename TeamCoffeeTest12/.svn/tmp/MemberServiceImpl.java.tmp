@@ -1,0 +1,82 @@
+package com.teamcoffee.member.service;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.teamcoffee.member.vo.MemberVO;
+import com.teamcoffee.util.sha256;
+
+@Service("memberService")
+public class MemberServiceImpl implements MemberService{
+	@Autowired
+	private SqlSessionTemplate sqlSession;
+
+	@Override
+	public String memIdCheck(MemberVO memberVO) {
+		return sqlSession.selectOne("memIdCheck", memberVO);
+	}
+	
+	@Override
+	public String memEmailCheck(MemberVO memberVO) {
+		return sqlSession.selectOne("memEmailCheck", memberVO);
+	}
+	
+	@Override
+	public String getSaltByMemId(MemberVO memberVO) {
+		return sqlSession.selectOne("getSaltByMemId", memberVO);
+	}
+	
+	@Override
+	public void insertMember(MemberVO memberVO) {
+		String salt = sha256.generateSalt();
+		memberVO.setSalt(salt);
+		
+		String memPw = memberVO.getMemPw();
+		memPw = sha256.getEncrypt(memPw, salt);
+		memberVO.setMemPw(memPw);
+		sqlSession.insert("insertMember", memberVO);
+		
+	}
+
+	@Override
+	public MemberVO memberLoginProcess(MemberVO memberVO) {
+		return sqlSession.selectOne("memberLoginProcess", memberVO);
+	}
+
+	@Override
+	public MemberVO memberInfo(MemberVO memberVO) {
+		return sqlSession.selectOne("memberInfo", memberVO);
+	}
+
+	//회원탈퇴 처리
+	@Override
+	public void deleteMember(MemberVO memberVO) {
+		sqlSession.delete("deleteMember",memberVO);
+	}
+	//회원정보 업데이트처리
+	@Override
+	public void myPageUpdate(MemberVO memberVO) {
+		sqlSession.update("myPageUpdate",memberVO);
+	}
+<<<<<<< .mine
+	
+	//아이디 찾기 처리
+	@Override 
+	public MemberVO find_id(MemberVO memberVO){ 
+		return sqlSession.selectOne("find_id", memberVO); 
+	}
+
+	@Override
+	public MemberVO find_pw(MemberVO memberVO) {
+		return sqlSession.selectOne("find_pw",memberVO);
+	}
+	 
+||||||| .r101
+=======
+
+
+	
+
+>>>>>>> .r128
+}

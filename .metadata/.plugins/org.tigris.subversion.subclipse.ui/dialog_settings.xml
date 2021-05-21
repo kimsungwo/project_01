@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="HistoryDialog.location.x" value="720"/>
+	<item key="HistoryDialog.location.y" value="195"/>
+	<item key="HistoryDialog.size.x" value="400"/>
+	<item key="HistoryDialog.size.y" value="400"/>
+	<item key="HistoryDialog.weights.0" value="333"/>
+	<item key="HistoryDialog.weights.1" value="333"/>
+	<item key="HistoryDialog.weights.2" value="333"/>
+	<item key="HistoryTableProvider.HistoryDialog.Revision" value="37"/>
+	<item key="HistoryTableProvider.HistoryDialog.Date" value="92"/>
+	<item key="HistoryTableProvider.HistoryDialog.Author" value="73"/>
+	<item key="HistoryTableProvider.HistoryDialog.Comment" value="182"/>
+	<item key="CommitDialog.location.x" value="0"/>
+	<item key="CommitDialog.location.y" value="0"/>
+	<item key="CommitDialog.size.x" value="1838"/>
+	<item key="CommitDialog.size.y" value="1080"/>
+	<item key="CommitDialog.weights.0" value="500"/>
+	<item key="CommitDialog.weights.1" value="500"/>
+	<item key="HistoryTableProvider.SVNHistoryPage.Revision" value="96"/>
+	<item key="HistoryTableProvider.SVNHistoryPage.Date" value="238"/>
+	<item key="HistoryTableProvider.SVNHistoryPage.Author" value="190"/>
+	<item key="HistoryTableProvider.SVNHistoryPage.Comment" value="476"/>
+	<item key="GenerateDiffFileWizard.location.x" value="614"/>
+	<item key="GenerateDiffFileWizard.location.y" value="127"/>
+	<item key="GenerateDiffFileWizard.size.x" value="613"/>
+	<item key="GenerateDiffFileWizard.size.y" value="625"/>
+	<section name="NewLocationWizard">
+		<list key="ConfigurationWizardMainPage.STORE_URL_ID">
+			<item value="https://DESKTOP-H9VKH7S/svn/teamCoffee"/>
+			<item value="https://DESKTOP-H9VKH7S/svn/testProject"/>
+		</list>
+	</section>
+	<section name="CommitWizard">
+		<item key="VWeight1" value="500"/>
+		<item key="VWeight2" value="500"/>
+		<item key="ShowCompare" value="false"/>
+	</section>
+	<section name="SynchronizeResourceSelectionDialog">
+	</section>
+</section>

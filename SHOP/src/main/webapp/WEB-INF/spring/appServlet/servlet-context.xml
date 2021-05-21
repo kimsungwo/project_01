@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+	<default-servlet-handler/>
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- 타일즈 설정 -->
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+	    <beans:property name="definitions">
+	        <beans:list>
+	            <beans:value>classpath:tiles-config.xml</beans:value>
+	        </beans:list>
+	    </beans:property>
+	</beans:bean>
+	
+	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+        <beans:property name="order" value="1" /><!-- 순서를 우선으로 지정 -->
+    </beans:bean>
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="2" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.shop.*.controller" />
+	
+	
+	<!-- interceptor클래스의 객체생성 -->
+	<beans:bean id="menuInterceptor" class="com.shop.interceptor.MenuInterceptor"/>
+	<beans:bean id="loginInterceptor" class="com.shop.interceptor.LoginInterceptor"/>
+	
+	
+	
+	<!--  interceptor가 실행될 요청을 지정  -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/*/*"/>
+			<exclude-mapping path="/admin/insertCategory"/> <!-- //exclude-mapping 이건 예외사항임 -->
+			<exclude-mapping path="/admin/deleteCategory"/>
+			<exclude-mapping path="/admin/updateItemStock"/>
+			<exclude-mapping path="/admin/updateItemPrice"/>
+			<exclude-mapping path="/admin/updateItemStatus"/>
+			<exclude-mapping path="/member/login"/>
+			<exclude-mapping path="/member/logout"/>
+			<!-- <exclude-mapping path="/admin/insertItem"/> -->
+			<beans:ref bean="menuInterceptor"/> <!--ref =  레퍼런스의 줄임말 -->
+		</interceptor>
+		
+		<interceptor>
+		<mapping path="/admin/*"/>
+		
+			<!--<exclude-mapping path="/member/logout"/>-->
+			<beans:ref bean="loginInterceptor"/> <!--ref =  어떤객체를 가지고 할건지. -->
+		</interceptor>
+	</interceptors>
+</beans:beans>
+
+
+
+
+
+
+
+

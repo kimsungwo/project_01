@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="qnaMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.admin.vo.QnAViewVO" id="qnaView">
+		<id     column="QNA_CODE" 			property="qnaCode"/>
+		<result column="BOARD_NUM" 			property="boardNum"/>
+		<result column="QNA_MEMBER_TYPE" 	property="qnaMemberType"/>
+		<result column="MEMBER_TYPE" 		property="memberType"/>
+		<result column="QNA_IS_ANSWER" 		property="qnaIsAnswer"/>
+		<result column="QNA_IS_ANSWER_NAME" property="qnaIsAnswerName"/>
+		<result	column="BOARD_NAME"			property="boardName"/>
+		<result	column="BOARD_CONTENT"		property="boardContent"/>
+		<result column="BOARD_WRITER"		property="boardWriter"/>
+		<result	column="BOARD_CODE"			property="boardCode"/>
+		<result	column="BOARD_REG_DATE"		property="boardRegDate"/>
+		<result	column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result	column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result	column="QNA_WRITER_CODE"	property="qnaWriterCode"/>
+	</resultMap>
+
+	<!-- QnA 리스트 -->
+	<select id="selectQnAList" resultMap="qnaView">
+		SELECT QNA_CODE
+			, BOARD_NUM
+			, QNA_MEMBER_TYPE
+			, MEMBER_TYPE
+			, QNA_IS_ANSWER
+			, QNA_IS_ANSWER_NAME
+			, BOARD_NAME
+			, BOARD_WRITER
+			, BOARD_REG_DATE
+		FROM QNA_VIEW
+		WHERE BOARD_CODE = 'BOARD_5'
+		<if test="!boardWriter.equals('')">
+			AND BOARD_WRITER = #{boardWriter}
+		</if>
+		<if test="!qnaMemberType.equals('all')">
+			AND QNA_MEMBER_TYPE = #{qnaMemberType}
+		</if>
+		ORDER BY BOARD_REG_DATE DESC
+	</select>
+	
+	<!-- 글 작성시 QnA 테이블에 들어갈 boardNum -->
+	<select id="selectMaxBoardNumToQnA" resultType="int">
+		SELECT MAX(BOARD_NUM)
+		FROM DJV_BOARD
+	</select>
+	
+	<!-- QnA 테이블 insert -->
+	<insert id="insertQnA">
+		INSERT INTO DJV_QNA (
+			QNA_CODE
+			, BOARD_NUM
+			, QNA_MEMBER_TYPE
+			, QNA_WRITER_CODE
+		) VALUES (
+			(SELECT 'QNA_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(QNA_CODE, 5))) + 1, 1), 3, '0') FROM DJV_QNA)
+			, #{boardNum}
+			, #{qnaMemberType}
+			, #{qnaWriterCode}
+		)
+	</insert>
+	
+	<!-- QnA 상세보기 -->
+	<select id="selectDetailQnA" resultMap="qnaView">
+		SELECT QNA_CODE
+			, BOARD_NUM
+			, MEMBER_TYPE
+			, QNA_IS_ANSWER_NAME
+			, BOARD_NAME
+			, BOARD_CONTENT
+			, BOARD_WRITER
+			, BOARD_REG_DATE
+		FROM QNA_VIEW
+		WHERE BOARD_NUM = #{boardNum}
+	</select>
+	
+	<!-- QnA 댓글 리스트 -->
+	<select id="selectCommentQnA" resultMap="boardMapper.comment">
+		SELECT COMMENT_CODE
+			, COMMENT_WRITER
+			, COMMENT_CONTENT
+			, COMMENT_DATE
+			, BOARD_NUM
+		FROM DJV_COMMENT
+		WHERE BOARD_NUM = #{boardNum}
+		ORDER BY COMMENT_DATE
+	</select>
+	
+	<!-- QnA 답변상태 갱신 -->
+	<update id="updateIsAnswer">
+		UPDATE DJV_QNA
+		SET QNA_IS_ANSWER = 'Y'
+		WHERE BOARD_NUM = #{boardNum}
+	</update>
+	
+</mapper>	
+	
+	

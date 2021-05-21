@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="reviewMapper">
+	<!-- resultmap 작성 -->
+	
+	<resultMap type="com.teamcoffee.review.vo.ReviewVO" id="review">
+		<id     column="REVIEW_CODE" 		property="reviewCode"/>
+		<result column="BUY_CODE" 			property="buyCode"/>
+		<result column="REVIEW_STAR" 		property="reviewStar"/>
+		<result column="REVIEW_CONTENT" 	property="reviewContent"/>
+		<result column="MEM_CODE" 			property="memCode"/>
+		<result column="REVIEW_REG_DATE" 	property="reviewRegDate"/>
+		<result column="REVIEW_IMG" 		property="reviewImg"/>
+		<result column="CAFE_CODE" 			property="cafeCode"/>
+	
+	</resultMap>
+	
+	<insert id="insertReview">
+		INSERT INTO DJV_REVIEW (
+			REVIEW_CODE
+			, BUY_CODE
+			, REVIEW_STAR
+			, REVIEW_CONTENT
+			, MEM_CODE
+			, REVIEW_IMG
+			, CAFE_CODE
+		) VALUES(
+			(SELECT 'RE_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(REVIEW_CODE, 4))) + 1, 1), 3, '0') FROM DJV_REVIEW)
+			, #{buyCode}
+			, #{reviewStar}
+			, #{reviewContent}
+			, #{memCode}
+			, #{reviewImg}
+			, #{cafeCode}
+		)
+	</insert>
+	
+	<select id="reviewListbyMemCode" resultMap="review">
+		SELECT REVIEW_CODE
+			, BUY_CODE
+			, REVIEW_STAR
+			, REVIEW_CONTENT
+			, MEM_CODE
+			, REVIEW_REG_DATE
+			, REVIEW_IMG
+			, CAFE_CODE
+		FROM DJV_REVIEW
+		WHERE MEM_CODE = #{memCode}
+		ORDER BY REVIEW_REG_DATE DESC
+	</select>
+	
+	<select id="reviewListbyCafeCode" resultMap="review">
+		SELECT REVIEW_CODE
+			, BUY_CODE
+			, REVIEW_STAR
+			, REVIEW_CONTENT
+			, MEM_CODE
+			, REVIEW_REG_DATE
+			, REVIEW_IMG
+			, CAFE_CODE
+		FROM DJV_REVIEW
+		WHERE CAFE_CODE = #{cafeCode}
+		ORDER BY REVIEW_REG_DATE DESC
+	</select>
+	
+</mapper>	
+	

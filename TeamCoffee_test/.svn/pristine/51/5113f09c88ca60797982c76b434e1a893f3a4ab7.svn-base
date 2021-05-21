@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="cafeChainMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.board.vo.BoardVO" id="board">
+		<id 	column="BOARD_NUM"			property="boardNum"/>
+		<result column="BOARD_NAME"			property="boardName"/>
+		<result column="BOARD_CONTENT"		property="boardContent"/>
+		<result column="BOARD_WRITER"		property="boardWriter"/>
+		<result column="BOARD_CODE"			property="boardCode"/>
+		<result column="BOARD_REG_DATE"		property="boardRegDate"/>
+		<result column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result column="EVENT_FROM_DATE"	property="eventFromDate"/>
+		<result column="EVENT_TO_DATE"		property="eventToDate"/>
+	</resultMap>
+	
+	<insert id="writeBoard">
+		INSERT INTO DJV_BOARD (
+			BOARD_NUM
+			BOARD_NAME
+			BOARD_CONTENT
+			BOARD_CODE
+			EVENT_FROM_DATE
+			EVENT_TO_DATE
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_NUM)+1, 1) FROM DJV_BOARD)
+			, #{boardName}
+			, #{boardContent}
+			, #{boardCode}
+			, #{eventFromDate}
+			, #{eventToDate}
+		)
+	</insert>
+	
+</mapper>

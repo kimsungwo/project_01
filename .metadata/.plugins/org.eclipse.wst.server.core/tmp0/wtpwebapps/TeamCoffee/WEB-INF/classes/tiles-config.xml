@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<!-- 일반회원의 페이지 설정 -->
+	<definition name="baseLayout" template="/WEB-INF/views/template/template.jsp">
+		<put-attribute name="title" value="Da Java Coffee"/>
+		<put-attribute name="menu" value="/WEB-INF/views/template/menu.jsp"/>
+		<put-attribute name="body" value=""/>
+	</definition>
+	
+	<!-- 관리자의 페이지 설정 -->
+	<!-- <definition name="ownerLayout" template="/WEB-INF/views/template/owner_template.jsp">
+		<put-attribute name="title" value="Da Java Coffee - Owner"/>
+		<put-attribute name="menu" value="/WEB-INF/views/template/owner_menu.jsp"/>
+		<put-attribute name="side" value="/WEB-INF/views/template/side.jsp"/>
+		<put-attribute name="body" value=""/>
+	</definition> -->
+	
+	<!-- 사이드바가 있는 페이지 설정 -->
+	<definition name="base2Layout" template="/WEB-INF/views/template/template2.jsp">
+		<put-attribute name="title" value="Da Java Coffee"/>
+		<put-attribute name="menu" value="/WEB-INF/views/template/menu.jsp"/>
+		<put-attribute name="side" value="/WEB-INF/views/template/side.jsp"/>
+		<put-attribute name="body" value=""/>
+	</definition>
+	
+	<!-- 사이드바가 있는 일반회원 마이 페이지 설정 -->
+	<definition name="memberLayout" template="/WEB-INF/views/template/template2.jsp">
+		<put-attribute name="title" value="Da Java Coffee"/>
+		<put-attribute name="menu" value="/WEB-INF/views/template/menu.jsp"/>
+		<put-attribute name="side" value="/WEB-INF/views/template/side_member.jsp"/>
+		<put-attribute name="body" value=""/>
+	</definition>
+	
+	<!-- 사이드바가 있는 매장주 회원 마이 페이지 설정 -->
+	<definition name="ownerLayout" template="/WEB-INF/views/template/template2.jsp">
+		<put-attribute name="title" value="Da Java Coffee"/>
+		<put-attribute name="menu" value="/WEB-INF/views/template/menu.jsp"/>
+		<put-attribute name="side" value="/WEB-INF/views/template/side_owner.jsp"/>
+		<put-attribute name="body" value=""/>
+	</definition>
+		<!-- 사이드바가 있는 관리자 페이지 설정 -->
+	<definition name="adminLayout" template="/WEB-INF/views/template/template2.jsp">
+		<put-attribute name="title" value="Da Java Coffee"/>
+		<put-attribute name="menu" value="/WEB-INF/views/template/menu.jsp"/>
+		<put-attribute name="side" value="/WEB-INF/views/template/side_admin.jsp"/>
+		<put-attribute name="body" value=""/>
+	</definition>
+	
+	<!-- <definition name="owner/*" extends="ownerLayout">
+		<put-attribute name="body" value="/WEB-INF/views/owner/{1}.jsp"/>
+	</definition> -->
+	
+	<definition name="cafe/board/*" extends="base2Layout">
+		<put-attribute name="body" value="/WEB-INF/views/cafe/{1}.jsp"/>
+	</definition>
+	
+	<definition name="member/board/*" extends="memberLayout">
+		<put-attribute name="body" value="/WEB-INF/views/member/{1}.jsp"/>
+	</definition>
+	
+	<definition name="owner/board/*" extends="ownerLayout">
+		<put-attribute name="body" value="/WEB-INF/views/owner/{1}.jsp"/>
+	</definition>
+	
+		<definition name="admin/board/*" extends="adminLayout">
+		<put-attribute name="body" value="/WEB-INF/views/admin/{1}.jsp"/>
+	</definition>
+	
+	
+	
+	<definition name="*/*" extends="baseLayout">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	
+	
+</tiles-definitions>

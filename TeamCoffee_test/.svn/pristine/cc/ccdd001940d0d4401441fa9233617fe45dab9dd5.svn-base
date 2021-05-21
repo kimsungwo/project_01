@@ -1,0 +1,23 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div class="row">
+	<div class="col">
+		<table class="table">
+			<tr>
+				<th>공지사항</th>
+				<th>테이블</th>
+				<th>임시</th>
+				<th>입니다</th>
+			</tr>
+		</table>
+	</div>
+</div>
+</body>
+</html>

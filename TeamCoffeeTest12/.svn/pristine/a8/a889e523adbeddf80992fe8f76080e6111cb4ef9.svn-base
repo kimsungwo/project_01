@@ -1,0 +1,28 @@
+/* 페이지 로딩 후 실행 */
+$(document).ready(function(){
+	$(document).on('change', '#selectCafeList', function(){
+		const cafeCode = $('#selectCafeList option:selected').val();
+		selectCafeCategoryList(cafeCode)
+	});
+	
+});
+
+/* 함수선언 영역*/
+(function($){
+	selectCafeCategoryList = function(cafeCode){
+    	$.ajax({
+            url: '/menu/selectCafeCategoryList', //요청경로
+            type: 'post',
+            data:{'cafeCode' : cafeCode}, //필요한 데이터
+            success: function(result) {
+              
+               alert('성공');
+            },
+            error: function(){
+             //ajax 실행 실패 시 실행되는 구간
+               alert('실패');
+            }
+      });
+    }
+	
+})(jQuery);

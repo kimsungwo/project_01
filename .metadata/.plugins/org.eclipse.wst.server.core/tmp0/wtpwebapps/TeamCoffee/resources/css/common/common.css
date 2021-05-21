@@ -1,0 +1,110 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Mukta&family=Noto+Sans+KR&family=Poppins:wght@200&display=swap');
+.container-fluid{
+	font-family: 'Mukta', 'Noto Sans KR', sans-serif;
+	font-size: 18px;
+	width: 100%;
+	margin-bottom: 50px;
+}
+.bodyDiv {
+	margin-top: 120px;
+}
+.logo h1 {
+  font-family: 'Lobster', cursive;
+}
+.card-deck{
+	margin: 50px 0;
+}
+.carousel-control-prev-icon { 
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E"); 
+} 
+.carousel-control-next-icon { 
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E"); 
+}
+
+.title h1 {
+	font-family: 'Lobster', cursive;
+	font-size: 5rem;
+}
+.title .logoColor {
+	color: #FF8200;
+}
+p {
+	font-size: 1.5rem;
+}
+.carousel-item img {
+  width: 1500px;
+}
+.modal-header{
+	background-color: #343a40;
+	color: white;
+	
+}
+.list-group-item.active{
+	background-color: #343a40;
+	border-color: #343a40;
+}
+.list-group{
+	border-radius: 0px;
+}
+label[class='is-invalid']{
+	font-size: 0.9rem;
+	color: red;
+	display: block;
+	margin: 4px 0px;
+}
+.profileTable{
+	font-size: 0.95rem;
+}
+.profileTable td{
+	vertical-align: middle;
+}
+.profileTable tr:last-of-type td{
+	border-bottom: 1px solid #dee2e6;
+}
+.profileTable tbody td:first-of-type {
+	background-color: #F2F2F2;
+}
+.profileBtnDiv, .regBtnDiv{
+	text-align: right;
+}
+.subMenuInfo{
+	font-size: 1.1rem;
+	color: #585858;
+}
+::-webkit-scrollbar {
+	width: 5px; /*스크롤바의 너비*/
+}
+::-webkit-scrollbar-thumb {
+	background-color: #A4A4A4; /*스크롤바의 색상*/
+}
+::-webkit-scrollbar-track {
+	background-color: none; /*스크롤바 트랙 색상*/
+}
+.close{
+	color: white;
+	opacity: 0.4;
+}
+.close:hover{
+	color:white;
+	opacity: 1;
+}
+.idSpan{
+	color: #FF8200;
+	font-weight: bold;
+}
+.warningSpan{
+	color: #ff6000;
+}
+.btn{
+	border-radius: 0.1rem;	
+}
+.span-red{
+	color: red;
+}
+.findTable, .findBtnDiv{
+	text-align: center;
+}
+.findResultDiv{
+	margin-top: 20px;	
+}

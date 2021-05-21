@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- 데이터베이스에 insert, update시 필요에 의해 null값이 들어갈 경우가 있다. -->
+<!-- Mybatis는 기본적으로 쿼리 실행 시 null 값을 허용ㅎ지 않기 때문에, null값으로  -->
+<!-- 값을 받아야 하는 경우 별도로 null값을 허용한다는 세팅이 필요하다. -->
+<configuration>
+	<settings>
+		<setting value="VARCHAR" name="jdbcTypeForNull"/>
+	</settings>
+</configuration>

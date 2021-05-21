@@ -1,0 +1,56 @@
+package com.teamcoffee.member.vo;
+
+public class PointVO {
+	// 포인트 내역 코드 
+    private String pointCode;
+
+    // 회원 코드 
+    private String memCode;
+
+    // 포인트 변동사항 
+    private String pointChangeName;
+
+    // 포인트 변동량 
+    private int pointChange;
+
+    public String getPointCode() {
+        return pointCode;
+    }
+
+    public void setPointCode(String pointCode) {
+        this.pointCode = pointCode;
+    }
+
+    public String getMemCode() {
+        return memCode;
+    }
+
+    public void setMemCode(String memCode) {
+        this.memCode = memCode;
+    }
+
+    public String getPointChangeName() {
+        return pointChangeName;
+    }
+
+    public void setPointChangeName(String pointChangeName) {
+        this.pointChangeName = pointChangeName;
+    }
+
+    public int getPointChange() {
+        return pointChange;
+    }
+
+    public void setPointChange(int pointChange) {
+        this.pointChange = pointChange;
+    }
+
+    // DjvPoint 모델 복사
+    public void CopyData(PointVO param)
+    {
+        this.pointCode = param.getPointCode();
+        this.memCode = param.getMemCode();
+        this.pointChangeName = param.getPointChangeName();
+        this.pointChange = param.getPointChange();
+    }
+}

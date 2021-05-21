@@ -1,0 +1,18 @@
+package com.teamcoffee.buy.service;
+
+import java.util.List;
+
+import com.teamcoffee.buy.vo.BuyDetailVO;
+import com.teamcoffee.menu.vo.MenuOptionViewVO;
+import com.teamcoffee.menu.vo.MenuViewVO;
+
+public interface BuyService {
+	//메뉴코드로 정보 가져오기
+	MenuViewVO selectMenuAll(BuyDetailVO buyDetailVO);
+	
+	//메뉴옵션코드로 정보들 가져오기(필수)
+	List<MenuOptionViewVO> selectRequiredOptions(BuyDetailVO buyDetailVO);
+
+	//메뉴옵션코드로 정보들 가져오기선택)
+	List<MenuOptionViewVO> selectSelectionOptions(BuyDetailVO buyDetailVO);
+}

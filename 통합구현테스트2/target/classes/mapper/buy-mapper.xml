@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="buyMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.shop.buy.vo.BuyVO" id="buy">
+		<id     column="BUY_CODE" 	   property="buyCode"/>
+		<result column="ITEM_CODE"	   property="itemCode"/>
+		<result column="BUY_QUANTITY"  property="buyQuantity"/>
+		<result column="BUYER"   	   property="buyer"/>
+		<result column="BUY_DATE"      property="buyDate"/>
+	</resultMap>
+
+	<resultMap type="com.shop.buy.vo.BuyViewVO" id="buyView">
+		<id     column="BUY_CODE" 	   property="buyCode"/>
+		<result column="ITEM_CODE"	   property="itemCode"/>
+		<result column="BUY_QUANTITY"  property="buyQuantity"/>
+		<result column="BUYER"   	   property="buyer"/>
+		<result column="BUY_DATE"      property="buyDate"/>
+		<result column="ITEM_NAME"     property="itemName"/>
+		<result column="NAME"      	   property="name"/>
+		<result column="ITEM_PRICE"    property="itemPrice"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
+		<result column="IMG_NAME"      property="imgName"/>
+		<result column="TOTAL_PRICE"   property="totalPrice"/>
+	</resultMap>
+<!-- 	<update id="buyPage">
+		UPDATE BOOK_ITEM
+		SET
+		ITEM_STOCK = ITEM_STOCK - #{buyQuantity}
+		WHERE ITEM_CODE = #{itemCode}-->
+	<!--</update> 
+	<insert id="insertBuy">
+	INSERT INTO BUY_INFO (
+		BUY_CODE
+		, ITEM_CODE
+		, BUY_QUANTITY
+		, BUYER
+	)VALUES(
+		(SELECT 'BUY_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(BUY_CODE,5)))+1,1),3,'0') FROM BUY_INFO)
+		, #{itemCode}
+		, #{buyQuantity}
+		, #{buyer}
+	)
+	</insert>-->
+	<select id="buyLog" resultMap="buyView">
+	SELECT BUY_CODE,BUYER,BUY_DATE,TOTAL_PRICE,NAME
+	FROM BUY_INFO_VIEW
+	 <!-- 2021.04.01~2021.04.10  -->
+	WHERE TO_CHAR(BUY_DATE,'YYYY-MM-DD') &gt;= #{fromDate}
+	AND TO_CHAR(BUY_DATE,'YYYY-MM-DD') &lt;= #{toDate}
+	<if test="buyer != null and !buyer.equals('')">
+	AND (LOWER(BUYER) LIKE '%'||LOWER(#{buyer})||'%' OR LOWER(NAME) LIKE '%'||LOWER(#{buyer})||'%')
+	</if>
+	ORDER BY BUY_DATE DESC
+	</select>
+	
+	<!--  *mapper에서 아예 db처럼 써달라는명령문
+<![CDATA[
+이안에 작성
+]]>
+	 -->
+	 <update id="insertBuy">
+	 	{call INSERT_BUY(#{itemCode},#{buyQuantity},#{buyer})}	
+	 </update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

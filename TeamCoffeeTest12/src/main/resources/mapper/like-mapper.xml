@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="likeMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.like.vo.LikeVO" id="like">
+		<id     column="LIKE_NO" 		property="likeNo"/>
+		<result column="CAFE_CODE" 		property="cafeCode"/>
+		<result column="MEM_CODE" 		property="memCode"/>
+		<result column="CAFE_NAME" 		property="cafeName"/>
+		<result column="CAFE_LOGO" 		property="cafeLogo"/>
+		<result column="CAFE_ADDR" 		property="cafeAddr"/>
+		<result column="CAFE_ADDR_DETAIL" 	property="cafeAddrDetail"/>
+	</resultMap>
+	
+	<select id="selectLikeNo" resultMap="like">
+		SELECT LIKE_NO
+		FROM DJV_LIKE
+		WHERE CAFE_CODE = #{cafeCode}
+		AND MEM_CODE = #{memCode}
+	</select>
+	<insert id="insertLikeVO">
+		INSERT INTO DJV_LIKE (
+			LIKE_NO
+			, CAFE_CODE
+			, MEM_CODE
+		) VALUES (
+			(SELECT NVL(MAX(LIKE_NO) + 1, 1) FROM DJV_LIKE)
+			, #{cafeCode}
+			, #{memCode}
+		)
+	</insert>
+	<delete id="deleteLikeVO">
+		DELETE DJV_LIKE
+		WHERE CAFE_CODE = #{cafeCode}
+		AND MEM_CODE = #{memCode}
+	</delete>
+	
+	<select id="likeCafeList" resultMap="like">
+		SELECT C.CAFE_CODE
+			, CAFE_NAME
+			, CAFE_LOGO
+			, CAFE_ADDR
+			, CAFE_ADDR_DETAIL
+		FROM DJV_CAFE C, DJV_LIKE L
+		WHERE C.CAFE_CODE = L.CAFE_CODE
+		AND MEM_CODE = #{memCode}	
+	</select>
+</mapper>	
+	
+	

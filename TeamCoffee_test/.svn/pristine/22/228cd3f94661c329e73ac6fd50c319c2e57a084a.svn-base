@@ -1,0 +1,120 @@
+package com.teamcoffee.owner.vo;
+
+import java.util.Date;
+
+//매장주 
+public class OwnerVO {
+
+ // 매장주 코드 
+ private String ownerCode;
+
+ // 매장주 아이디 
+ private String ownerId;
+
+ // 매장주 비밀번호 
+ private String ownerPw;
+
+ // 매장주 명 
+ private String ownerName;
+
+ // 매장주 생성날짜 
+ private Date ownerRegDate;
+
+ // 매장주 주소 
+ private String ownerAddr;
+
+ // 매장주 상세주소 
+ private String ownerAddrDetail;
+
+ // 매장주 폰번호 
+ private String ownerTel;
+
+ // 매장주 이메일 
+ private String ownerEmail;
+
+ public String getOwnerCode() {
+     return ownerCode;
+ }
+
+ public void setOwnerCode(String ownerCode) {
+     this.ownerCode = ownerCode;
+ }
+
+ public String getOwnerId() {
+     return ownerId;
+ }
+
+ public void setOwnerId(String ownerId) {
+     this.ownerId = ownerId;
+ }
+
+ public String getOwnerPw() {
+     return ownerPw;
+ }
+
+ public void setOwnerPw(String ownerPw) {
+     this.ownerPw = ownerPw;
+ }
+
+ public String getOwnerName() {
+     return ownerName;
+ }
+
+ public void setOwnerName(String ownerName) {
+     this.ownerName = ownerName;
+ }
+
+ public Date getOwnerRegDate() {
+     return ownerRegDate;
+ }
+
+ public void setOwnerRegDate(Date ownerRegDate) {
+     this.ownerRegDate = ownerRegDate;
+ }
+
+ public String getOwnerAddr() {
+     return ownerAddr;
+ }
+
+ public void setOwnerAddr(String ownerAddr) {
+     this.ownerAddr = ownerAddr;
+ }
+
+ public String getOwnerAddrDetail() {
+     return ownerAddrDetail;
+ }
+
+ public void setOwnerAddrDetail(String ownerAddrDetail) {
+     this.ownerAddrDetail = ownerAddrDetail;
+ }
+
+ public String getOwnerTel() {
+     return ownerTel;
+ }
+
+ public void setOwnerTel(String ownerTel) {
+     this.ownerTel = ownerTel;
+ }
+
+ public String getOwnerEmail() {
+     return ownerEmail;
+ }
+
+ public void setOwnerEmail(String ownerEmail) {
+     this.ownerEmail = ownerEmail;
+ }
+
+ // DjvOwner 모델 복사
+ public void CopyData(OwnerVO param)
+ {
+     this.ownerCode = param.getOwnerCode();
+     this.ownerId = param.getOwnerId();
+     this.ownerPw = param.getOwnerPw();
+     this.ownerName = param.getOwnerName();
+     this.ownerRegDate = param.getOwnerRegDate();
+     this.ownerAddr = param.getOwnerAddr();
+     this.ownerAddrDetail = param.getOwnerAddrDetail();
+     this.ownerTel = param.getOwnerTel();
+     this.ownerEmail = param.getOwnerEmail();
+ }
+}

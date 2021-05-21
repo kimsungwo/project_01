@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="adminMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.admin.vo.AdminViewVO" id="adminView">	
+		<id     column="MEM_CODE"		   property="memCode"/>
+		<result column="MEM_ID" 		   property="memId"/>
+		<result column="MEM_NICKNAME" 	   property="memNickname"/>
+		<result column="MEM_REG_DATE"      property="memRegDate"/>
+		<result column="MEM_TEL" 	   	   property="memTel"/>
+		<result column="MEM_EMAIL" 		   property="memEmail"/>
+		<result column="MEM_POINT" 	  	   property="memPoint"/>
+		<result column="MEM_GRADE"		   property="memGrade"/>
+		<result column="MEM_ADDR" 		   property="memAddr"/>
+		<result column="MEM_ADDR_DETAIL"   property="memAddrDetail"/>
+		<result column="GRADE_NAME"		   property="gradeName"/>
+		<result column="OWNER_CODE"		   property="ownerCode"/>
+		<result column="OWNER_ID" 		   property="ownerId"/>
+		<result column="OWNER_NAME"        property="ownerName"/>
+		<result column="OWNER_REG_DATE"    property="ownerRegDate"/>
+		<result column="OWNER_TEL" 		   property="ownerTel"/>
+		<result column="OWNER_EMAIL"       property="ownerEmail"/>
+		<result column="OWNER_ADDR"        property="ownerAddr"/>
+		<result column="OWNER_ADDR_DETAIL" property="ownerAddrDetail"/>
+		<result column="IS_ADMIN"		   property="isAdmin"/>
+		
+	</resultMap>
+	
+		<!-- 매장주 멤버관리 페이지 목록 -->
+	<select id="selectOwnerList" resultMap="adminView">
+		SELECT OWNER_CODE
+			, OWNER_NAME
+			, OWNER_ID
+			, OWNER_REG_DATE
+			, OWNER_TEL
+			, OWNER_EMAIL
+			, OWNER_ADDR
+			, OWNER_ADDR_DETAIL
+		FROM DJV_OWNER
+		WHERE <![CDATA[
+			TO_CHAR(OWNER_REG_DATE,'YYYY-MM-DD') >= #{preDate}
+		AND TO_CHAR(OWNER_REG_DATE,'YYYY-MM-DD') <= #{nowDate}
+		]]>
+		<if test="ownerId != null and !ownerId.equals('')">
+			AND UPPER(OWNER_ID) LIKE '%'||UPPER(#{ownerId})||'%'
+			</if>
+			AND IS_ADMIN = 'N'
+		ORDER BY OWNER_REG_DATE DESC
+	</select>
+	
+	<!-- 일반회원 멤버관리 페이지 목록 -->
+	<select id="selectMemberList" resultMap="adminView">
+		SELECT MEM_CODE
+			, MEM_ID
+			, MEM_NICKNAME
+			, MEM_TEL
+			, MEM_EMAIL
+			, MEM_REG_DATE
+		FROM DJV_MEMBER
+		 WHERE <![CDATA[
+			TO_CHAR(MEM_REG_DATE,'YYYY-MM-DD') >= #{preDate}
+		AND TO_CHAR(MEM_REG_DATE,'YYYY-MM-DD') <= #{nowDate}
+		]]>
+		<if test="memId != null and !memId.equals('')">
+			AND UPPER(MEM_ID) LIKE '%'||UPPER(#{memId})||'%'
+			</if>
+		ORDER BY MEM_REG_DATE DESC
+	</select>
+	
+	<select id="selectMemberDetail" resultMap="adminView">
+		SELECT DISTINCT MEM_CODE
+			, MEM_NICKNAME
+			, MEM_ID
+			, MEM_REG_DATE
+			, MEM_TEL
+			, MEM_EMAIL
+			, MEM_GRADE
+			, MEM_POINT
+			, MEM_ADDR
+			, MEM_ADDR_DETAIL
+		FROM MEMBER_MANAGE_VIEW,DJV_GRADE
+		WHERE MEM_CODE = #{memCode}
+
+	</select>
+
+	<select id="selectOwnerDetail" resultMap="adminView">
+		SELECT DISTINCT OWNER_CODE
+			, OWNER_NAME
+			, OWNER_ID
+			, OWNER_REG_DATE
+			, OWNER_TEL
+			, OWNER_EMAIL
+			, OWNER_ADDR
+			, OWNER_ADDR_DETAIL
+		FROM MEMBER_MANAGE_VIEW
+		WHERE OWNER_CODE = #{ownerCode}
+	</select>
+	
+	<select id="selectGradeName" resultType="String">
+		SELECT GRADE_NAME
+		FROM DJV_GRADE
+		WHERE GRADE_CODE = #{memGrade}
+	
+	</select>
+	
+	
+</mapper>	
+<!-- 	
+	아이디 중복체크
+	<select id="ownerIdCheck" resultType="String">
+		SELECT OWNER_ID
+		FROM DJV_OWNER
+		WHERE OWNER_ID = #{ownerId}
+	</select>
+	
+	이메일 중복체크
+	<select id="ownerEmailCheck" resultType="String">
+		SELECT OWNER_Email
+		FROM DJV_OWNER
+		WHERE OWNER_Email = #{ownerEmail}
+	</select>
+	
+	매장주 회원가입 처리
+	<insert id="insertOwner">
+		INSERT INTO DJV_OWNER (
+			OWNER_CODE
+			, OWNER_ID
+			, OWNER_PW
+			, OWNER_NAME
+			, OWNER_ADDR
+			, OWNER_ADDR_DETAIL
+			, OWNER_TEL
+			, OWNER_EMAIL
+			, SALT
+		) VALUES (
+			(SELECT 'OWNER_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(OWNER_CODE, 7))) + 1, 1), 3, '0') FROM DJV_OWNER)
+			, #{ownerId}
+			, #{ownerPw}
+			, #{ownerName}
+			, #{ownerAddr}
+			, #{ownerAddrDetail}
+			, #{ownerTel}
+			, #{ownerEmail}
+			, #{salt}
+		)
+	</insert>
+	
+	salt값 셀렉트
+	<select id="getSaltByOwnerId" resultType="String">
+		SELECT SALT
+		FROM DJV_OWNER
+		WHERE OWNER_ID = #{ownerId}
+	</select>
+	
+	매장주 로그인 처리
+	<select id="ownerLoginProcess" resultMap="owner">
+		SELECT OWNER_CODE
+			, OWNER_ID
+			, OWNER_NAME
+			, IS_ADMIN
+		FROM DJV_OWNER
+		WHERE OWNER_ID = #{ownerId}
+		AND OWNER_PW = #{ownerPw}	
+	</select>
+	
+	매장주 프로필 조회
+	<select id="selectOwnerInfo" resultMap="owner">
+		SELECT OWNER_CODE
+			, OWNER_ID
+			, OWNER_NAME
+			, OWNER_REG_DATE
+			, OWNER_ADDR
+			, OWNER_ADDR_DETAIL
+			, OWNER_TEL
+			, OWNER_EMAIL
+		FROM DJV_OWNER
+		WHERE OWNER_ID = #{ownerId}	
+	</select>
+	
+	매장 등록 처리
+	<insert id="insertCafe">
+		INSERT INTO DJV_CAFE (
+			CAFE_CODE
+			, CAFE_NAME
+			, OWNER_CODE
+			, CHAIN_CODE
+			, CAFE_HOURS
+			, CAFE_TEL
+			, CAFE_ADDR
+			, CAFE_ADDR_DETAIL
+			, CAFE_INFO
+			, CAFE_CESCO
+			, CAFE_LOGO
+			, CAFE_LATITUDE
+			, CAFE_LONGITUDE
+		) VALUES (
+			(SELECT 'CAFE_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(CAFE_CODE, 6))) + 1, 1), 3, '0') FROM DJV_CAFE)
+			, #{cafeName}
+			, #{ownerCode}
+			, #{chainCode}
+			, #{cafeHours}
+			, #{cafeTel}
+			, #{cafeAddr}
+			, #{cafeAddrDetail}
+			, #{cafeInfo}
+			, #{cafeCesco}
+			, #{cafeLogo}
+			, #{cafeLatitude}
+			, #{cafeLongitude}
+		)
+	</insert>
+	
+	매장관리-매장조회
+	<select id="CafeInfoList" resultMap="cafeMapper.cafe">
+		SELECT CAFE_CODE
+			, CAFE_NAME
+			, OWNER_CODE
+			, CHAIN_CODE
+			, CAFE_HOURS
+			, CAFE_TEL
+			, CAFE_ADDR
+			, CAFE_ADDR_DETAIL
+			, CAFE_LOGO
+			, CAFE_INFO
+			, CAFE_CESCO
+			, CAFE_REG_DATE 
+		FROM DJV_CAFE 
+		WHERE OWNER_CODE = #{ownerCode}
+		ORDER BY CAFE_REG_DATE
+	</select>
+	
+	매장별 정보수정(정보 읽어들이기)
+	<select id="selectCafeInfo" resultMap="cafeMapper.cafe">
+		SELECT CAFE_CODE
+			, CAFE_NAME
+			, OWNER_CODE
+			, CHAIN_CODE
+			, CAFE_HOURS
+			, CAFE_TEL
+			, CAFE_ADDR
+			, CAFE_ADDR_DETAIL
+			, CAFE_LOGO
+			, CAFE_INFO
+			, CAFE_CESCO
+		FROM DJV_CAFE 
+		WHERE CAFE_CODE = #{cafeCode}
+	</select>
+	
+	매장별 정보수정
+	<update id="cafeInfoUpdate">
+		UPDATE DJV_CAFE
+		SET CAFE_NAME = #{cafeName}
+			, CAFE_TEL = #{cafeTel}
+			, CAFE_ADDR = #{cafeAddr}
+			, CAFE_ADDR_DETAIL = #{cafeAddrDetail}
+			, CAFE_CESCO = #{cafeCesco}
+			, CAFE_HOURS = #{cafeHours}
+			, CAFE_INFO = #{cafeInfo}
+			, CAFE_LOGO = #{cafeLogo}
+		WHERE CAFE_CODE = #{cafeCode}
+	</update>
+	
+	매장 삭제
+	<delete id="deleteCafe">
+		DELETE DJV_CAFE
+		WHERE CAFE_CODE = #{cafeCode}
+	</delete>
+	
+	04.28
+	매장주 프로필 정보수정
+	<update id="myPageUpdateOwner" >
+		UPDATE DJV_OWNER
+		SET
+		OWNER_ID = #{ownerId}
+		<if test="!ownerPw.equals('')">
+		, OWNER_PW = #{ownerPw}
+		</if>
+		<if test="!ownerAddr.equals('')">
+		, OWNER_ADDR = #{ownerAddr}
+		</if>
+		<if test="!ownerAddrDetail.equals('')">
+		, OWNER_ADDR_DETAIL = #{ownerAddrDetail}		
+		</if>
+		<if test="!ownerTel.equals('')">
+		, OWNER_TEL = #{ownerTel}
+		</if>
+		<if test="!ownerPw.equals('')">
+		, SALT = #{salt}
+		</if>
+		WHERE OWNER_ID = #{ownerId}
+	</update>
+	매장주 회원탈퇴처리 중간과정
+	<select id="ownerDropOut" resultMap="owner">
+		SELECT OWNER_ID
+		, OWNER_PW
+		, OWNER_CODE
+		FROM DJV_OWNER
+		WHERE OWNER_ID = #{ownerId}
+		AND OWNER_PW = #{ownerPw}
+	</select>
+	매장주 회원 탈퇴
+	<delete id="deleteOwner">
+		DELETE DJV_OWNER
+		WHERE OWNER_CODE = #{ownerCode}
+		AND OWNER_PW = #{ownerPw}
+	</delete>	
+	
+	아이디 찾기
+	<select id="find_idOwner" parameterType="String" resultMap="owner">
+		SELECT OWNER_ID
+		FROM DJV_OWNER
+		WHERE OWNER_EMAIL = #{ownerEmail}
+	</select>
+	비밀번호 찾기
+	<select id="find_pwOwner"  resultMap="owner">
+		SELECT OWNER_CODE
+		FROM DJV_OWNER
+		WHERE OWNER_EMAIL = #{ownerEmail}
+		AND OWNER_ID = #{ownerId}
+	</select>
+		비밀번호 수정			
+	<update id="pwUpdateOwner">
+		UPDATE DJV_OWNER
+		SET
+		OWNER_PW = #{ownerPw}
+		, SALT = #{salt}
+		WHERE OWNER_ID = #{ownerId}
+	</update>
+		
+	로그인유지
+	<update id="ownerKeepLogin">
+		UPDATE DJV_OWNER
+		SET SESSION_KEY = #{sessionId}
+			, SESSION_LIMIT = #{sessionLimit}
+		WHERE OWNER_ID = #{ownerId}	
+	</update>
+	
+	세션키검증
+	<select id="checkOwnerWithSessionKey" resultMap="owner">
+		SELECT * FROM DJV_OWNER 
+		WHERE SESSION_KEY = #{value}
+	</select>
+	
+	예약확인 페이지 주문 목록
+	<select id="selectOrderList" resultMap="buyMapper.buyView">
+		SELECT DISTINCT BUY_CODE
+			, CAFE_NAME
+			, TOTAL_PRICE
+			, BUY_DATE
+			, BUY_REQUESTS
+			, BUY_STATUS
+			, BUY_STATUS_NAME
+			, MEM_CODE
+		FROM BUY_VIEW
+		WHERE CAFE_CODE = #{cafeCode}
+		<![CDATA[
+		AND SUBSTR(BUY_DATE, 0, 10) >= #{preDate}
+		AND SUBSTR(BUY_DATE, 0, 10) <= #{nowDate}
+		]]>
+		ORDER BY BUY_CODE DESC
+	</select>
+	
+	예약확인 페이지 메뉴이름 지정
+	<select id="renameOrderNames" resultMap="buyMapper.buyView">
+		SELECT DISTINCT BUY_DETAIL_CODE
+		, MENU_NAME
+		FROM BUY_VIEW
+		WHERE BUY_CODE = #{buyCode}
+		ORDER BY BUY_DETAIL_CODE
+	</select>
+	
+	매장주의 소유 매장 확인
+	<select id="selectCafeCodeToOwner" resultMap="cafeMapper.cafe">
+		SELECT CAFE_CODE
+		FROM DJV_CAFE
+		WHERE OWNER_CODE = #{ownerCode}
+	</select>
+	
+	새로운 주문 확인 알림
+	<select id="checkOrderConfirm" resultMap="buyMapper.buyView">
+		SELECT DISTINCT BUY_CODE
+			, CAFE_NAME
+			, BUY_DATE
+		FROM BUY_VIEW
+		WHERE CAFE_CODE IN
+		<foreach collection="list" open="(" close=")" separator="," item="cafeCodes">
+			#{cafeCodes.cafeCode}
+		</foreach>
+		AND BUY_STATUS = 1
+		AND IS_READ = 0
+	</select>
+	
+ -->
+	
+	

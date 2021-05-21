@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="buyMapper">
+	<!-- resultmap 작성 -->
+	<select id="selectBuyerInfo" resultMap="memberMapper.member">
+		SELECT MEM_CODE
+			, MEM_ID
+			, MEM_TEL
+			, MEM_POINT
+		FROM DJV_MEMBER
+		WHERE MEM_CODE = #{memCode}
+	</select>
+
+</mapper>	
+	

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="boardMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.board.vo.BoardVO" id="board">
+		<id 	column="BOARD_NUM"			property="boardNum"/>
+		<result	column="BOARD_NAME"			property="boardName"/>
+		<result	column="BOARD_CONTENT"		property="boardContent"/>
+		<result column="BOARD_WRITER"		property="boardWriter"/>
+		<result	column="BOARD_CODE"			property="boardCode"/>
+		<result	column="BOARD_REG_DATE"		property="boardRegDate"/>
+		<result	column="BOARD_VIEW_CNT"		property="boardViewCnt"/>
+		<result	column="EVENT_FROM_DATE"	property="eventFromDate"/>
+		<result	column="EVENT_TO_DATE"		property="eventToDate"/>
+	</resultMap>
+	
+	<resultMap type="com.teamcoffee.board.vo.ImgVO" id="boardImg">
+		<id		column="BOARD_IMG_CODE"			property="boardImgCode"/>
+		<result column="BOARD_CODE"				property="boardCode"/>
+		<result column="BOARD_IMG_IS_MAIN"		property="boardImgIsMain"/>
+		<result column="BOARD_IMG_NAME"			property="boardImgName"/>
+		<result column="BOARD_REG_DATE"			property="boardRegDate"/>
+	</resultMap>
+	
+	<!-- 일반공지 게시글 목록 -->
+	<select id="noticeList1" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_1'
+		ORDER BY BOARD_NUM DESC
+	</select>
+	<!-- 중요공지 게시글 목록 -->
+	<select id="noticeList2" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_2'
+		ORDER BY BOARD_NUM DESC
+	</select>
+	
+	<!-- 게시글 업로드 -->
+	<insert id="boardUpload">
+		INSERT INTO DJV_BOARD(
+			BOARD_NUM
+			, BOARD_NAME
+			, BOARD_CONTENT
+			, BOARD_WRITER
+			, BOARD_CODE
+			, EVENT_FROM_DATE
+			, EVENT_TO_DATE
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_NUM)+1, 1) FROM DJV_BOARD)
+			, #{boardName}
+			, #{boardContent}
+			, #{boardWriter}
+			, #{boardCode}
+			, #{eventFromDate}
+			, #{eventToDate}
+		)
+	</insert>
+	
+	<!-- 이벤트 게시글 목록 -->
+	<select id="eventList" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_REG_DATE
+			, TO_CHAR(EVENT_FROM_DATE, 'YYYY-MM-DD') AS EVENT_FROM_DATE
+			, TO_CHAR(EVENT_TO_DATE, 'YYYY-MM-DD') AS EVENT_TO_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_3'
+		ORDER BY BOARD_NUM DESC
+	</select>
+	
+	
+	
+	<!-- 유저게시글 목록 -->
+	<select id="userBoardList" resultMap="board">
+		SELECT BOARD_NUM
+			, BOARD_NAME
+			, BOARD_WRITER
+			, TO_CHAR(BOARD_REG_DATE, 'YYYY-MM-DD') AS BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+		FROM DJV_BOARD
+		WHERE BOARD_CODE = 'BOARD_4'
+		ORDER BY BOARD_NUM DESC
+	</select>
+
+
+
+	<!-- 게시글 상세보기 -->
+	<select id="boardDetail" resultMap="board">
+		SELECT BOARD_NAME
+			, BOARD_NUM
+			, BOARD_WRITER
+			, BOARD_REG_DATE
+			, BOARD_VIEW_CNT
+			, BOARD_CONTENT
+			, BOARD_CODE
+			, TO_CHAR(EVENT_FROM_DATE, 'YYYY-MM-DD') AS EVENT_FROM_DATE
+			, TO_CHAR(EVENT_TO_DATE, 'YYYY-MM-DD') AS EVENT_TO_DATE
+		FROM DJV_BOARD
+		WHERE BOARD_NUM = #{boardNum}
+	</select>
+
+	<!-- 게시글 수정 -->
+	<update id="updateBoard">
+		UPDATE DJV_BOARD
+		SET
+		BOARD_NAME = #{boardName}
+		, BOARD_CONTENT = #{boardContent}
+		, EVENT_FROM_DATE = #{eventFromDate}
+		, EVENT_TO_DATE = #{eventToDate}
+		WHERE BOARD_NUM = #{boardNum}
+	</update>
+
+	<!-- 게시물 삭제 -->
+	<select id="delete">
+		DELETE DJV_BOARD
+		WHERE BOARD_NUM = #{boardNum}
+	</select>
+	
+	<!-- 게시물 이미지 등록  -->
+	<insert id="insertBoardImgs">
+		INSERT INTO DJV_BOARD_IMG (
+			BOARD_IMG_CODE
+			, BOARD_NUM
+			, BOARD_IMG_IS_MAIN
+			, BOARD_UPLOAD_IMG_NAME
+			,  BOARD_ORIGIN_IMG_NAME
+		) VALUES (
+			(SELECT NVL(MAX(BOARD_IMG_CODE)+1, 1) FROM DJV_BOARD_IMG)
+			, #{boardNum}
+			, #{boardImgIsMain}
+			, #{boardUploadImgName}
+			, #{boardOriginImgName}
+		)
+	</insert>
+	
+	<!-- 게시글 이미지를 디비에 등록 할 때 필요한 글 번호를 조회한다. -->
+	<select id="selectMaxBoardNum" resultType="int">
+		SELECT MAX(BOARD_NUM) FROM DJV_BOARD 
+	</select>
+	
+	
+	
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문 mapper태그 안에 작성 -->
+<mapper namespace="cafeMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.teamcoffee.cafe.vo.CafeVO" id="cafe">
+		<id     column="CAFE_CODE" 		  property="cafeCode"/>
+		<result column="CAFE_NAME" 		  property="cafeName"/>
+		<result column="OWNER_CODE"  	  property="ownerCode"/>
+		<result column="CHAIN_CODE"  	  property="chainCode"/>
+		<result column="CAFE_HOURS" 	  property="cafeHours"/>
+		<result column="CAFE_TEL" 		  property="cafeTel"/>
+		<result column="CAFE_ADDR" 		  property="cafeAddr"/>
+		<result column="CAFE_ADDR_DETAIL" property="cafeAddrDetail"/>
+		<result column="CAFE_LOGO" 		  property="cafeLogo"/>
+		<result column="CAFE_INFO" 		  property="cafeInfo"/>
+		<result column="CAFE_STAR" 		  property="cafeStar"/>
+		<result column="CAFE_REVIEW_CNT"  property="cafeReviewCnt"/>
+		<result column="CAFE_CESCO" 	  property="cafeCesco"/>
+		<result column="CAFE_REG_DATE"    property="cafeRegDate"/>
+		<result column="CAFE_STATE" 	  property="cafeState"/>
+		<result column="CAFE_LATITUDE"    property="cafeLatitude"/>
+		<result column="CAFE_LONGITUDE"   property="cafeLongitude"/>
+		<result column="LIKE_CHECK"   	  property="likeCheck"/>
+	</resultMap>
+	
+	<select id="selectCafeOfChainList" resultMap="cafe">
+		SELECT CAFE_CODE
+			, CAFE_NAME
+			, CHAIN_CODE
+			, CAFE_TEL
+			, CAFE_ADDR
+			, CAFE_ADDR_DETAIL
+			, CAFE_LOGO
+			, ROUND(CAFE_STAR, 1) AS CAFE_STAR
+			, CAFE_REVIEW_CNT
+			, CAFE_LATITUDE
+			, CAFE_LONGITUDE
+			, CAFE_STATE
+			 , (CASE 
+			 	WHEN EXISTS (SELECT CAFE_CODE FROM DJV_LIKE WHERE CAFE_CODE = A.CAFE_CODE AND MEM_CODE = #{memCode}) THEN '1'
+                WHEN NOT EXISTS (SELECT CAFE_CODE FROM DJV_LIKE WHERE CAFE_CODE = A.CAFE_CODE AND MEM_CODE = #{memCode}) THEN '0'
+                END) AS LIKE_CHECK 
+		FROM DJV_CAFE A
+		<if test="!chainCode.equals('all')">
+		WHERE CHAIN_CODE = #{chainCode}
+		</if>
+		<if test="cafeName != null and !cafeName.equals('')">
+		AND UPPER(CAFE_NAME) LIKE '%'||UPPER(#{cafeName})||'%'
+		</if>
+		ORDER BY
+		<choose>
+			<when test="order != null and !order.equals('')">
+				${order}
+			</when>
+			<otherwise>CAFE_REG_DATE</otherwise>
+		</choose> 	
+	</select>
+	
+	<select id="selectMapInfo" resultType="String">
+		SELECT CAFE_ADDR
+		FROM DJV_CAFE
+		WHERE CAFE_CODE = #{cafeCode}
+	</select>
+	
+	<select id="selectCafeDetailInfo" resultMap="cafe">
+		SELECT CAFE_CODE
+			, CAFE_NAME
+			, CHAIN_CODE
+			, CAFE_TEL
+			, CAFE_ADDR
+			, CAFE_ADDR_DETAIL
+			, CAFE_HOURS
+			, CAFE_LOGO
+		FROM DJV_CAFE
+		WHERE CAFE_CODE = #{cafeCode}
+	</select>
+	
+	<update id="updateCafeReviewCnt">
+		UPDATE DJV_CAFE
+		SET CAFE_REVIEW_CNT = (SELECT COUNT(*) FROM DJV_REVIEW WHERE CAFE_CODE = #{cafeCode})
+		WHERE CAFE_CODE = #{cafeCode}
+	</update>
+	
+	<update id="updateCafeStar">
+		UPDATE DJV_CAFE
+		SET CAFE_STAR = NVL((SELECT AVG(REVIEW_STAR) FROM DJV_REVIEW WHERE CAFE_CODE = #{cafeCode}), 0.0)
+		WHERE CAFE_CODE = #{cafeCode}
+	</update>
+</mapper>	
+	
+	

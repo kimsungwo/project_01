@@ -1,0 +1,36 @@
+package com.teamcoffee.owner.service;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.teamcoffee.cafe.vo.CafeVO;
+import com.teamcoffee.owner.vo.OwnerVO;
+
+@Service("ownerService")
+public class OwnerServiceImpl implements OwnerService{
+	@Autowired
+	private SqlSessionTemplate sqlSession;
+
+	@Override
+	public void insertOwner(OwnerVO ownerVO) {
+		sqlSession.insert("insertOwner", ownerVO);
+	}
+
+	@Override
+	public OwnerVO ownerLoginProcess(OwnerVO ownerVO) {
+		return sqlSession.selectOne("ownerLoginProcess", ownerVO);
+	}
+
+	@Override
+	public OwnerVO selectOwnerInfo(OwnerVO ownerVO) {
+		return sqlSession.selectOne("selectOwnerInfo", ownerVO);
+	}
+
+	@Override
+	public void insertCafe(CafeVO cafeVO) {
+		sqlSession.insert("insertCafe", cafeVO);
+		
+	}
+	
+}

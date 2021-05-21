@@ -1,0 +1,5 @@
+package com.teamcoffee.buy.service;
+
+public interface BuyService {
+
+}

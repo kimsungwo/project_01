@@ -1,0 +1,26 @@
+package com.teamcoffee.admin.service;
+
+import java.util.List;
+import com.teamcoffee.admin.vo.AdminViewVO;
+
+public interface AdminService {
+	
+
+	
+	//매장주 멤버관리 목록조회
+	List<AdminViewVO> selectOwnerList(AdminViewVO adminViewVO);
+	
+	//멤버관리 목록조회
+	List<AdminViewVO> selectMemberList(AdminViewVO adminViewVO);
+	
+	
+	//매장주 상세조회
+	AdminViewVO selectOwnerDetail(AdminViewVO adminViewVO);
+	
+	//일반회원 상세조회
+	AdminViewVO selectMemberDetail(AdminViewVO adminViewVO);
+	
+	//일반회원 등급이름 조회
+	String selectGradeName(String string);
+	
+}

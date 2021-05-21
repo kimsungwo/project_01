@@ -1,0 +1,12 @@
+127.0.0.1 - - [19/May/2021:17:57:49 +0900] "GET / HTTP/1.1" 200 200
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:49 +0900] "GET / HTTP/1.1" 200 200
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /cafe/main HTTP/1.1" 200 10960
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/css/common/common.css?ver=46 HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/js/template/setInterval.js?ver=58 HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/js/template/menu.js?ver=34 HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/css/common/jquery.mCustomScrollbar.css HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/js/common/jquery.mCustomScrollbar.concat.min.js HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/img/main/dajavalogo.png HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/img/main/logo1.png HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:50 +0900] "GET /resources/img/main/banner.jpg HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [19/May/2021:17:57:51 +0900] "GET /favicon.ico HTTP/1.1" 404 1464

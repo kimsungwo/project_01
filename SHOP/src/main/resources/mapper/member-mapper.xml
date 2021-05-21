@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 모든 SQL문을 mapper태그 안에 작성 -->
+<mapper namespace="memberMapper">
+	<!-- resultmap 작성 -->
+	<resultMap type="com.shop.member.vo.MemberVO" id="member">
+		<id     column="ID"    		 property="id"/>
+		<result column="PASSWORD"    property="password"/>
+		<result column="NAME" 	     property="name"/>
+		<result column="TEL"  		 property="tel"/>
+		<result column="ADDR"  		 property="addr"/>
+		<result column="ADDR_DETAIL" property="addrDetail"/>
+		<result column="EMAIL"  	 property="email"/>
+		<result column="GENDER"  	 property="gender"/>
+		<result column="IS_ADMIN"    property="isAdmin"/>
+		<result column="REG_DATE"    property="regDate"/>
+	</resultMap>
+	<insert id="insertMember">
+		INSERT INTO MEMBER ( ID
+			, PASSWORD
+			, NAME
+			, TEL
+			, ADDR
+			, ADDR_DETAIL
+			, EMAIL
+			, GENDER
+		) VALUES ( #{id}
+			, #{password}
+			, #{name}
+			, #{tel}
+			, #{addr}
+			, #{addrDetail}
+			, #{email}
+			, #{gender}
+		)
+	</insert>
+	<select id="login" resultMap="member">
+		SELECT ID
+			, NAME
+			, IS_ADMIN
+			, TEL
+			, ADDR
+			, ADDR_DETAIL
+		FROM MEMBER
+		WHERE ID = #{id}
+		AND PASSWORD = #{password}
+	</select>
+	<select  id="selectMember" resultMap="member">
+		SELECT ID
+			, NAME
+			, TEL
+			, ADDR
+			, ADDR_DETAIL
+			, PASSWORD
+			,EMAIL
+			,GENDER
+			,IS_ADMIN
+		FROM MEMBER
+		WHERE ID = #{id}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

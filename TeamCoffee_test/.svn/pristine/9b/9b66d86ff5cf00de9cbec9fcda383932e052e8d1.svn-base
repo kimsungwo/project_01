@@ -1,0 +1,84 @@
+/* 페이지 로딩 후 실행 */
+$(document).ready(function(){
+	$(document).on('change', '#selectCafeList', function(){
+		const cafeCode = $('#selectCafeList option:selected').val();
+		if(cafeCode == ''){
+			$('#selectCategoryForm').fadeOut(500, function(){
+				$('#selectCategoryForm').empty();
+			});
+			$('#insertMenuForm').fadeOut(500, function(){
+				$('#insertMenuForm').empty();
+			});
+			return;
+		}
+		$('#selectCategoryForm').empty();
+		$('#insertMenuForm').empty();
+		selectCafeCategoryList(cafeCode);
+	});
+	
+	$(document).on('change', '#selectCategoryList', function(){
+		const categoryCode = $('#selectCategoryList option:selected').val();
+		if(categoryCode == ''){
+			$('#insertMenuForm').fadeOut(500, function(){
+				$('#insertMenuForm').empty();
+			});
+			return;
+		}
+		$('#insertMenuForm').empty();
+		insertMenuForm();
+	});
+	
+});
+
+/* 함수선언 영역*/
+(function($){
+	selectCafeCategoryList = function(cafeCode){
+    	$.ajax({
+            url: '/menu/selectCafeCategoryList', //요청경로
+            type: 'post',
+            data:{'cafeCode' : cafeCode}, //필요한 데이터
+            success: function(result) {
+               let str = '';
+               str += '<tr>';
+               str += '<th scope="row">카테고리</th>';
+               str += '<td><select id="selectCategoryList" class="form-control form-control-sm">';
+               str += '<option value="">클릭하면 선택이 가능합니다</option>';
+               for(let i = 0; i < result.length; i++){
+            	   str += '<option value="' + result[i].menuCategoryCode + '">' + result[i].categoryName + '</option>';
+               }
+               str += '</select></td>';
+               str += '</tr>';
+               $('#selectCategoryForm').append(str).hide();
+               $('#selectCategoryForm').fadeIn(500);
+               
+            },
+            error: function(){
+             //ajax 실행 실패 시 실행되는 구간
+               alert('실패');
+            }
+      });
+    }
+	
+	insertMenuForm = function(){
+		let str = '';
+		str += '<tr>';
+		str += '<th scope="row">메뉴명</th>';
+		str += '<td><input type="text" class="form-control" name="menuName" id="menuName"></td>';
+		str += '</tr>';
+		str += '<tr>';
+		str += '<th scope="row">가격</th>';
+		str += '<td><input type="text" class="form-control" name="menuPrice" id="menuPrice"></td>';
+		str += '</tr>';
+		str += '<tr>';
+		str += '<th scope="row">메뉴 이미지</th>';
+		str += '<td></td>';
+		str += '</tr>';
+		str += '<tr>';
+		str += '<th scope="row">설명</th>';
+		str += '<td><input type="text" class="form-control" name="menuInfo" id="menuInfo"></td>';
+		str += '</tr>';
+		$('#insertMenuForm').append(str).hide();
+        $('#insertMenuForm').fadeIn(500);
+	}
+	
+})(jQuery);
